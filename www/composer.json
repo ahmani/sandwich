@@ -1,0 +1,15 @@
+{
+  "name": "bdweb-games",
+  "require" : {
+    "slim/slim" : "3.*",
+    "illuminate/database": "5.0.*",
+    "php": ">=5.5"
+  },
+
+  "autoload" : {
+    "psr-0": {
+      "lbs\\": "src"
+    }
+  }
+
+}
