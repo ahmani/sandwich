@@ -36,6 +36,11 @@ use Illuminate\Database\Capsule\Manager as DB;
      		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
      }
     );
+    $app->get('/ingredients/{id}',
+     function (Request $req, Response $resp, $args) {
+            return (new lbs\api\PublicController($this))->getIngredientByCategorie($req,$resp,$args);
+     }
+    );
   
     $app->run();
 
