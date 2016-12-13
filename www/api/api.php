@@ -14,16 +14,16 @@ use Illuminate\Database\Capsule\Manager as DB;
 //require_once "../src/lbs/utils/ConnectionFactory.php";
 
 
-		$capsule = new DB;		
+		$capsule = new DB;
 
-		$parse = parse_ini_file("../src/conf/connex.ini");	
+		$parse = parse_ini_file("../src/conf/connex.ini");
 		$capsule->addConnection($parse);
 
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 
 
-   
+
 
     $app = new \Slim\App;
     $app->get('/categorie/{id}',
@@ -36,6 +36,13 @@ use Illuminate\Database\Capsule\Manager as DB;
      		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
      }
     );
-  
-    $app->run();
 
+
+		$app->get('/ingredient/{id}',
+			function (Request $req, Response $resp, $args){
+				return (new lbs\api\PublicController($this))->getingredient($req,$resp,$args);
+			}
+		);
+
+
+    $app->run();
