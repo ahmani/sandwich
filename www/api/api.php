@@ -9,10 +9,17 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
-//use lbs\utils\ConnectionFactory as Con;
+//TODO
 
-//require_once "../src/lbs/utils/ConnectionFactory.php";
+//creation de commande ; information de la personne(nom, email) , date_commande, livraison(date, heure)... ajout dans le hearder location 'commande/id'
+// réponse {"commande": {"nom"=>"michel","token" = > "https://github.com/ircmaxell/RandomLib".....}}
 
+//creation d'un token qui identifie la commande, passage du token pour chaque opération sur un commande, test du token avant chaque opération
+
+//Ajout des sandwichs
+
+//Gestion des erreurs :
+    // 500,404,400, 201 created
 
 		$capsule = new DB;
 
@@ -30,13 +37,20 @@ use Illuminate\Database\Capsule\Manager as DB;
      function (Request $req, Response $resp, $args) {
      		return (new lbs\api\PublicController($this))->getcategorie($req,$resp,$args);
      }
-    );
+    )->setName('categorie');
     $app->get('/categories',
      function (Request $req, Response $resp, $args) {
      		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
      }
     );
 
+    )->setName('categories');
+
+    $app->get('/ingredients/{id}',
+     function (Request $req, Response $resp, $args) {
+            return (new lbs\api\PublicController($this))->getIngredientByCategorie($req,$resp,$args);
+     }
+    )->setName('ingrediantsByCat');
 
 		$app->get('/ingredient/{id}',
 			function (Request $req, Response $resp, $args){

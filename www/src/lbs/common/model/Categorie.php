@@ -12,4 +12,9 @@ Class Categorie extends Model
 
 
 	public $timestamps =false;
+
+	function ingredients()
+	{
+		
+	}
 }
