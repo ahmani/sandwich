@@ -3,7 +3,7 @@
 require_once "vendor/autoload.php";
 require_once "src/conf/autoload.php";
 
-use lbs\common\model\categorie as Category;
+use lbs\common\model\Categorie as Category;
 use lbs\utils\ConnectionFactory as Con;
 
 Con::setConfig("src/conf/connex.ini");
