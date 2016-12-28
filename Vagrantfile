@@ -164,8 +164,8 @@ Vagrant.configure("2") do |config|
   #  commenter pour usage sur une machine non connectée à ce réseau
   #
 
-  config.proxy.http = "http://www-cache.iutnc.univ-lorraine.fr:3128"
-  config.proxy.https = "http://www-cache.iutnc.univ-lorraine.fr:3128"
+  #config.proxy.http = "http://www-cache.iutnc.univ-lorraine.fr:3128"
+  #config.proxy.https = "http://www-cache.iutnc.univ-lorraine.fr:3128"
 
 
 
