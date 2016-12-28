@@ -44,7 +44,7 @@ Class PublicController
 			      					  'links' => ['self' =>
 			      					  ['href' => $this->cont['router']->pathFor('categorie',['id' => $cat->id])]]]);
 			    }
-			    
+
 			    $rs->getBody()->write(json_encode($col));
 	}
 
