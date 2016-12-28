@@ -4,6 +4,7 @@ require_once "../vendor/autoload.php";
 require_once "../src/conf/autoload.php";
 
 use \lbs\common\model\Categorie as Categorie;
+use \lbs\common\model\Commande;
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -29,15 +30,13 @@ use Illuminate\Database\Capsule\Manager as DB;
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 
-
-
-
     $app = new \Slim\App;
     $app->get('/categorie/{id}',
      function (Request $req, Response $resp, $args) {
      		return (new lbs\api\PublicController($this))->getcategorie($req,$resp,$args);
      }
     )->setName('categorie');
+
     $app->get('/categories',
      function (Request $req, Response $resp, $args) {
      		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
@@ -48,13 +47,18 @@ use Illuminate\Database\Capsule\Manager as DB;
      function (Request $req, Response $resp, $args) {
             return (new lbs\api\PublicController($this))->getIngredientByCategorie($req,$resp,$args);
      }
-    )->setName('ingrediantsByCat');
+    )->setName('ingredientsByCat');
 
 		$app->get('/ingredient/{id}',
 			function (Request $req, Response $resp, $args){
 				return (new lbs\api\PublicController($this))->getingredient($req,$resp,$args);
 			}
-		);
+		)->setName('categorieIngredients');
 
+		$app->post('/commandes',
+			function (Request $req, Respong $resp, $args){
+				return (new lbs\api\PublicController($this))->createCommande($req, $resp, $args);
+			}
+			)->setName('createCommande');
 
     $app->run();
