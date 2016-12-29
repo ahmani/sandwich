@@ -30,6 +30,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 
+		/* categorie/id */
     $app = new \Slim\App;
     $app->get('/categorie/{id}',
      function (Request $req, Response $resp, $args) {
@@ -37,24 +38,28 @@ use Illuminate\Database\Capsule\Manager as DB;
      }
     )->setName('categorie');
 
+		/* collection de categories */
     $app->get('/categories',
      function (Request $req, Response $resp, $args) {
      		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
      }
     )->setName('categories');
 
+		/* collection d'ingredients pour 1 categorie */
     $app->get('/ingredients/{id}',
      function (Request $req, Response $resp, $args) {
-            return (new lbs\api\PublicController($this))->getIngredientByCategorie($req,$resp,$args);
+            return (new lbs\api\PublicController($this))->getIngredientsByCategory($req,$resp,$args);
      }
     )->setName('ingredientsByCat');
 
+		/* ressource ingredient/id */
 		$app->get('/ingredient/{id}',
 			function (Request $req, Response $resp, $args){
 				return (new lbs\api\PublicController($this))->getingredient($req,$resp,$args);
 			}
 		)->setName('categorieIngredients');
 
+		/* creer une commande */
 		$app->post('/commandes',
 			function (Request $req, Respong $resp, $args){
 				return (new lbs\api\PublicController($this))->createCommande($req, $resp, $args);
