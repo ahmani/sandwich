@@ -45,19 +45,26 @@ use Illuminate\Database\Capsule\Manager as DB;
      }
     )->setName('categories');
 
+		/*ressource ingredient/id*/
+		$app->get('/ingredient/{id}',
+			function (Request $req, Response $resp, $args){
+				return (new lbs\api\PublicController($this))->getingredient($req,$resp,$args);
+			}
+		)->setName('ingredient');
+
 		/* collection d'ingredients pour 1 categorie */
-    $app->get('/ingredients/{id}',
+    $app->get('/ingredients/{cat_id}',
      function (Request $req, Response $resp, $args) {
             return (new lbs\api\PublicController($this))->getIngredientsByCategory($req,$resp,$args);
      }
     )->setName('ingredientsByCat');
 
-		/* ressource ingredient/id */
-		$app->get('/ingredient/{id}',
+		/* categorie d'un ingredient */
+		$app->get('/ingredientcat/{id}',
 			function (Request $req, Response $resp, $args){
-				return (new lbs\api\PublicController($this))->getingredient($req,$resp,$args);
+				return (new lbs\api\PublicController($this))->getingredientcat($req,$resp,$args);
 			}
-		)->setName('categorieIngredients');
+		)->setName('IngredientCat');
 
 		/* creer une commande */
 		$app->post('/commandes',

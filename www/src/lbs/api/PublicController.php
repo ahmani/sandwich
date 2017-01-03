@@ -46,6 +46,16 @@ Class PublicController
 	}
 
 
+	/* fonction pour ressource ingredient/id*/
+	public function getingredient($req,$rs,$args)
+	{
+		$ing = Ingredient::where('id', '=', $args['id'])->firstOrFail();
+		$rs = $rs->withStatus(200)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+		$rs->getBody()->write($ing->toJson());
+	}
+
+
 	/*JE NE FONCTIONNE PAS! pas encore!!!!!! -.- */
 	/* fonction pour collection d'ingredients pour 1 categorie */
 	public function getIngredientsByCategory($req,$rs,$args)
@@ -73,8 +83,8 @@ Class PublicController
 	}
 
 
-	/* fonction pour ressource ingredient/id */
-	public function getingredient($req,$rs,$args)
+	/* fonction pour categorie d'un ingredient */
+	public function getingredientcat($req,$rs,$args)
 	{
 		try{
 			$ing = Ingredient::where('id', '=', $args['id'])->firstOrFail();
