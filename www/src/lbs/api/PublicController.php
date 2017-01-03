@@ -56,30 +56,13 @@ Class PublicController
 	}
 
 
-	/*JE NE FONCTIONNE PAS! pas encore!!!!!! -.- */
 	/* fonction pour collection d'ingredients pour 1 categorie */
 	public function getIngredientsByCategory($req,$rs,$args)
 	{
-		$cat = Categorie::select()->get();
+		$ings = Ingredient::where('cat_id','=',$args['cat_id'])->get();
 		$rs = $rs->withStatus(200)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-		//tableau des ingredients d'une categorie
-		$catIngredients = array();
-		$cats = json_decode($cat->toJson());
-		//tous les ingredients de cette categorie
-		foreach ($cats as $cat)
-		{
-			array_push($catIngredients, ['ingredient' => (array)$cat,
-			  'links' => ['self' =>
-			  ['href' => $this->cont['router']->pathFor('categorie',['id' => $cat->id])]]]);
-		}
-		$rs->getBody()->write(json_encode($catIngredients));
-
-		//$ings = $cat->ingredients();
-		//$cat->ingredients()->get();
-
-
-
+		$rs->getBody()->write($ings->toJson());
 	}
 
 

@@ -46,18 +46,18 @@ use Illuminate\Database\Capsule\Manager as DB;
                     ->withStatus(405)
                     ->withHeader('Allow', implode(',', $methods) )
                     ->getBody()
-                    ->write( 'méthode permises :' .implode(',', $methods) );     
+                    ->write( 'méthode permises :' .implode(',', $methods) );
             };
         };
-        
+
         $c[ 'errorHandler' ] = function( $c ) {
             return function( $req, $resp , $e ) {
                     return $resp->withStatus( 500 )
                                 ->getBody()
-                                ->write( 'error :' .$e->getMessage()) 
+                                ->write( 'error :' .$e->getMessage())
                                 ->write( 'file : ' . $e->getFile() )
                                 ->write( 'line : ' . $e->getLine() );
-                            };
+                    };
         };
 
 
@@ -70,8 +70,8 @@ use Illuminate\Database\Capsule\Manager as DB;
          }
         )->setName('categorie');
 
-    
-    
+
+
 		/* collection de categories */
     $app->get('/categories',
      function (Request $req, Response $resp, $args) {
