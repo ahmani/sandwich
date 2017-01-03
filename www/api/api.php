@@ -19,7 +19,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 //Ajout des sandwichs 
 
 //Gestion des erreurs :
-    // 500,404,400, 201 created
+// 500,404,400, 201 created
 
 		$capsule = new DB;		
 
