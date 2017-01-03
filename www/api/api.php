@@ -30,14 +30,48 @@ use Illuminate\Database\Capsule\Manager as DB;
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 
-		/* categorie/id */
-    $app = new \Slim\App;
-    $app->get('/categorie/{id}',
-     function (Request $req, Response $resp, $args) {
-     		return (new lbs\api\PublicController($this))->getcategorie($req,$resp,$args);
-     }
-    )->setName('categorie');
 
+        $c['notFoundHandler'] = function ($c) {
+            return function ($request, $response) use ($c) {
+                return $c['response']
+                    ->withStatus(404)
+                    ->withHeader('Content-Type', 'application/json;charset=utf8')
+                    ->write(json_encode(array('Error' => 'Page Not Found')));
+            };
+        };
+
+        $c['notAllowedHandler'] = function ($c) {
+            return function ($request, $response, $methods) use ($c) {
+                return $c['response']
+                    ->withStatus(405)
+                    ->withHeader('Allow', implode(',', $methods) )
+                    ->getBody()
+                    ->write( 'méthode permises :' .implode(',', $methods) );     
+            };
+        };
+        
+        $c[ 'errorHandler' ] = function( $c ) {
+            return function( $req, $resp , $e ) {
+                    return $resp->withStatus( 500 )
+                                ->getBody()
+                                ->write( 'error :' .$e->getMessage()) 
+                                ->write( 'file : ' . $e->getFile() )
+                                ->write( 'line : ' . $e->getLine() );
+                            };
+        };
+
+
+		/* categorie/id */
+        $app = new \Slim\App(new \Slim\Container($c));
+
+        $app->get('/categorie/{id}',
+         function (Request $req, Response $resp, $args) {
+         		return (new lbs\api\PublicController($this))->getcategorie($req,$resp,$args);
+         }
+        )->setName('categorie');
+
+    
+    
 		/* collection de categories */
     $app->get('/categories',
      function (Request $req, Response $resp, $args) {
