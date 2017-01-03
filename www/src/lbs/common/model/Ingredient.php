@@ -10,6 +10,11 @@ Class Ingredient extends Model
 	protected  $table = "ingredient";
 	protected  $primaryKey = "id" ;
 
-
 	public $timestamps =false;
+
+	/*la categorie d'une liste d'ingredients donnes*/
+	public function categorie()
+	{
+		return $this->belongsTo('lbs\common\model\Categorie','cat_id');
+	}
 }
