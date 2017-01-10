@@ -62,7 +62,17 @@ Class PublicController
 		$ings = Ingredient::where('cat_id','=',$args['cat_id'])->get();
 		$rs = $rs->withStatus(200)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-		$rs->getBody()->write($ings->toJson());
+
+		$col = array();
+		$ingredients = json_decode($ings->toJson());
+
+		foreach ($ingredients as $ings)
+		{
+			array_push($col, ['ingredient' => (array)$ings,
+			  'links' => ['self' =>
+			  ['href' => $this->cont['router']->pathFor('ingredient',['id' => $ings->id])]]]);
+		}
+		$rs->getBody()->write(json_encode($col));
 	}
 
 
@@ -77,7 +87,7 @@ Class PublicController
 				->withHeader('Content-Type', 'application/json;charset=utf8');
 			$rs->getBody()->write($ing->toJson());
 		}catch(\Exception $e){
-			return $this->json_error($rs, 404, $e->getMessage());
+			return $this->json_last_error($rs, 404, $e->getMessage());
 		}
 	}
 

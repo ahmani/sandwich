@@ -3,7 +3,7 @@
 namespace lbs\common\model;
 
 
-Class Commande{
+Class Commande extends Model{
   protected $token;
   protected $state; //{'created' ; 'paid' ; 'progress' ; 'ready' ; 'delivered'}
   protected $nom;
