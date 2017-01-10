@@ -30,13 +30,17 @@ use Illuminate\Database\Capsule\Manager as DB;
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 
-
+        $c = [
+            'settings' => [
+                'displayErrorDetails' => true,
+            ],
+        ];
         $c['notFoundHandler'] = function ($c) {
             return function ($request, $response) use ($c) {
                 return $c['response']
-                    ->withStatus(404)
+                    ->withStatus(400)
                     ->withHeader('Content-Type', 'application/json;charset=utf8')
-                    ->write(json_encode(array('Error' => 'Page Not Found')));
+                    ->write(json_encode(array('Error' => 'Malformed Uri')));
             };
         };
 
@@ -50,6 +54,9 @@ use Illuminate\Database\Capsule\Manager as DB;
             };
         };
 
+        
+      /*  $c[ 'errorHandler' ] = function( $c ) {
+
         $c[ 'errorHandler' ] = function( $c ) {
             return function( $req, $resp , $e ) {
                     return $resp->withStatus( 500 )
@@ -57,6 +64,10 @@ use Illuminate\Database\Capsule\Manager as DB;
                                 ->write( 'error :' .$e->getMessage())
                                 ->write( 'file : ' . $e->getFile() )
                                 ->write( 'line : ' . $e->getLine() );
+
+                            };
+        };*/
+
                     };
         };
 
@@ -70,14 +81,12 @@ use Illuminate\Database\Capsule\Manager as DB;
          }
         )->setName('categorie');
 
-
-
 		/* collection de categories */
-    $app->get('/categories',
-     function (Request $req, Response $resp, $args) {
-     		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
-     }
-    )->setName('categories');
+        $app->get('/categories',
+         function (Request $req, Response $resp, $args) {
+         		return (new lbs\api\PublicController($this))->getcategories($req,$resp,$args);
+         }
+        )->setName('categories');
 
 		/*ressource ingredient/id*/
 		$app->get('/ingredient/{id}',
@@ -87,11 +96,11 @@ use Illuminate\Database\Capsule\Manager as DB;
 		)->setName('ingredient');
 
 		/* collection d'ingredients pour 1 categorie */
-    $app->get('/ingredients/{cat_id}',
-     function (Request $req, Response $resp, $args) {
-            return (new lbs\api\PublicController($this))->getIngredientsByCategory($req,$resp,$args);
-     }
-    )->setName('ingredientsByCat');
+        $app->get('/ingredients/{cat_id}',
+         function (Request $req, Response $resp, $args) {
+                return (new lbs\api\PublicController($this))->getIngredientsByCategory($req,$resp,$args);
+         }
+        )->setName('ingredientsByCat');
 
 		/* categorie d'un ingredient */
 		$app->get('/ingredientcat/{id}',
@@ -106,5 +115,12 @@ use Illuminate\Database\Capsule\Manager as DB;
 				return (new lbs\api\PublicController($this))->createCommande($req, $resp, $args);
 			}
 			)->setName('createCommande');
+
+        //Créer un sandwich d'une commande existante
+        $app->post('/commande/{id}/sandwich',
+            function (Request $req, Response $resp, $args){
+                return (new lbs\api\PublicController($this))->CreateSandwich($req, $resp, $args);
+            }
+            )->setName('createSandwich');
 
     $app->run();
