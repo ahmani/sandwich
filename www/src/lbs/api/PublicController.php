@@ -20,10 +20,19 @@ Class PublicController
 	/* fonction pour categorie/id */
 	public function getcategorie($req,$rs,$args)
 	{
+		try{
 		$cat = Categorie::where('id', '=', $args['id'])->firstOrFail();
-		$rs = $rs->withStatus(200)
+			$rs = $rs->withStatus(200)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-		$rs->getBody()->write($cat->toJson());
+			$rs->getBody()->write($cat->toJson());
+			return $rs;
+		
+		}catch(\Exception $e){
+			$rs = $rs->withStatus(404)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
+			return $rs;
+		}
 	}
 
 
@@ -101,6 +110,23 @@ Class PublicController
 
 	/* fonction pour creer une commande */
 	public function createCommande($req, $rs, $args){
+
+	}
+
+
+	//fonction pour créer un sandwich d'une commande existante
+	public function CreateSandwich($req, $rs,$args)
+	{
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		if($_POST['token'] == $commande->token && $commande->etat == "created")
+		{
+
+		}
+		//passer le token par ul
+		//tester la correspondance entre le token et id_commande
+		//test sur l'état de la commande
+		// test sur les ingrédients du sandwich
+		// Ajouter le sandwich
 
 	}
 }
