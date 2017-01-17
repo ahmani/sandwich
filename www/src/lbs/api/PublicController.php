@@ -29,7 +29,7 @@ Class PublicController
 			->withHeader('Content-Type', 'application/json;charset=utf8');
 			$rs->getBody()->write($cat->toJson());
 			return $rs;
-		
+
 		}catch(\Exception $e){
 			$rs = $rs->withStatus(404)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
@@ -106,17 +106,29 @@ Class PublicController
 
 	/* fonction pour creer une commande */
 	public function createCommande($req, $rs, $args){
+		$com = new Commande;
+		//Creation du token
+		$factory = new \RandomLib\Factory;
+		$generator = $factory->getMediumStrengthGenerator();
+		$com->token = $generator->generateInt(32);
+
+		var_dump($req->getParsedBody());
+		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
+		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
+		$com->date = date("j-n-Y");
+		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
+		$com->save();
 
 	}
 
 
 	//fonction pour créer un sandwich d'une commande existante
 	public function CreateSandwich($req, $rs,$args)
-	{	
+	{
 		$count = 0;
-		
+
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-		
+
 		$body = $req->getParsedBody();
 
 		$size = size::where('id', '=', $body['taille'])->firstOrFail();
@@ -141,11 +153,11 @@ Class PublicController
 				$sandwich->save();
 
 				foreach ($body['ingredient'] as $key => $value) {
-					
+
 					$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
 					$sandwich->ingredients()->save($ingredient);
 				}
-				
+
 			}
 			return  json_error($rs,500,"error");
 		}
