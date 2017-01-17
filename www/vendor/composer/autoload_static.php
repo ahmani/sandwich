@@ -102,6 +102,20 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
                 0 => __DIR__ . '/../..' . '/src',
             ),
         ),
+        'S' => 
+        array (
+            'SecurityLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/security-lib/lib',
+            ),
+        ),
+        'R' => 
+        array (
+            'RandomLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/random-lib/lib',
+            ),
+        ),
         'P' => 
         array (
             'Pimple' => 

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 {"virtualbox":{"/var/www":{"guestpath":"/var/www","hostpath":"/home/ul/ahmani1u/www/www/lbs/sandwich/www","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/ul/ahmani1u/www/www/lbs/sandwich","disabled":false,"__vagrantfile":true}}}
-=======
-{"virtualbox":{"/var/www":{"guestpath":"/var/www","hostpath":"/home/ul/gillet38u/Documents/conceptionServeur/leBonSandwich/sandwich/www","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/ul/gillet38u/Documents/conceptionServeur/leBonSandwich/sandwich","disabled":false,"__vagrantfile":true}}}
->>>>>>> a3d5d4cdf87e4f12a1fb675dace7de4d2517c14d

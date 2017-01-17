@@ -15,7 +15,7 @@ github_pat          = ""
 # hostname ti be added in the local /etc/hosts
 # used for general tools, e.g. adminer
 
-hostname        = "lbs"
+hostname        = "lbs.local"
 
 #
 # vhost configuration
@@ -164,8 +164,8 @@ Vagrant.configure("2") do |config|
   #  commenter pour usage sur une machine non connectée à ce réseau
   #
 
-  #config.proxy.http = "http://www-cache.iutnc.univ-lorraine.fr:3128"
-  #config.proxy.https = "http://www-cache.iutnc.univ-lorraine.fr:3128"
+ config.proxy.http = "http://www-cache.iutnc.univ-lorraine.fr:3128"
+ config.proxy.https = "http://www-cache.iutnc.univ-lorraine.fr:3128"
 
 
 

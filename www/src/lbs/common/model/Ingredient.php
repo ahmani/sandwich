@@ -12,9 +12,14 @@ Class Ingredient extends Model
 
 	public $timestamps =false;
 
-	/*la categorie d'une liste d'ingredients donnes*/
 	public function categorie()
 	{
 		return $this->belongsTo('lbs\common\model\Categorie','cat_id');
+	}
+	public function sandwichs()
+	{
+		return $this->belongsToMany('lbs\common\model\sandwich','ingredient_sandwich','id');
+		return $this->belongsToMany('lbs\common\model\sandwich','ingredient_sandwich',
+			'id_ingredient','id_sandwich');
 	}
 }

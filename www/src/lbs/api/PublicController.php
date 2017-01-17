@@ -5,6 +5,9 @@ namespace lbs\api;
 use lbs\common\model\Categorie;
 use lbs\common\model\Ingredient;
 use lbs\common\model\Commande;
+use lbs\common\model\size;
+use lbs\common\model\type;
+use lbs\common\model\sandwich;
 
 Class PublicController
 {
@@ -99,17 +102,51 @@ Class PublicController
 
 	//fonction pour créer un sandwich d'une commande existante
 	public function CreateSandwich($req, $rs,$args)
-	{
+	{	
+		$count = 0;
+		
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-		if($_POST['token'] == $commande->token && $commande->etat == "created")
-		{
+		
+		$body = $req->getParsedBody();
 
+		$size = size::where('id', '=', $body['taille'])->firstOrFail();
+
+
+		foreach ($body['ingredient'] as $key => $value) {
+					$categorie = categorie::where('id', '=', $key)->firstOrFail();
+					if($categorie->special == '1')
+					{
+
+						$count= $count+1;
+					}
 		}
+
+		if($body['token'] == $commande->token && $commande->etat == "created")
+		{
+			if($size->nb_ingredients == count($body['ingredient']) && $count <= $size->nb_special)
+			{
+				$sandwich = new sandwich;
+				$sandwich->id_size = $body['taille'];
+				$sandwich->id_type = $body['type'];
+				$sandwich->save();
+
+				foreach ($body['ingredient'] as $key => $value) {
+					
+					$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
+					$sandwich->ingredients()->save($ingredient);
+				}
+				
+			}
+			return  json_error($rs,500,"error");
+		}
+
+
 		//passer le token par ul
 		//tester la correspondance entre le token et id_commande
 		//test sur l'état de la commande
 		// test sur les ingrédients du sandwich
 		// Ajouter le sandwich
+
 
 	}
 }

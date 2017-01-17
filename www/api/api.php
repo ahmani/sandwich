@@ -22,6 +22,12 @@ use Illuminate\Database\Capsule\Manager as DB;
 //Gestion des erreurs :
 // 500,404,400, 201 created
 
+        function json_error($resp,$code,$message) {
+                    return $resp->withStatus( $code )
+                                ->getBody()
+                                ->write(json_encode(array('Erreur' => $message)));
+
+        };
 		$capsule = new DB;
 
 		$parse = parse_ini_file("../src/conf/connex.ini");
@@ -54,22 +60,6 @@ use Illuminate\Database\Capsule\Manager as DB;
             };
         };
 
-        
-      /*  $c[ 'errorHandler' ] = function( $c ) {
-
-        $c[ 'errorHandler' ] = function( $c ) {
-            return function( $req, $resp , $e ) {
-                    return $resp->withStatus( 500 )
-                                ->getBody()
-                                ->write( 'error :' .$e->getMessage())
-                                ->write( 'file : ' . $e->getFile() )
-                                ->write( 'line : ' . $e->getLine() );
-
-                            };
-        };*/
-
-                    };
-        };
 
 
 		/* categorie/id */
