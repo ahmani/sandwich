@@ -149,36 +149,37 @@ Class PublicController
 		$count = 0;
 
 		if($args['id'])
-			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+			{
+				$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+			}
 		else
-			return json_error($rs,500,"Id commande required");
-
+			{
+				return json_error($rs,500,"Id commande required");
+			}
+			
 		$body = $req->getParsedBody();
 
-
-			if(!empty($body['taille']))
+		if(!empty($body['taille']))
+			{
 				$size = size::where('id', '=', $body['taille'])->firstOrFail();
-			else
-				json_error($rs,500,"Size required");
-
-
-
-		foreach ($body['ingredient'] as $key => $value) {
-
-					$categorie = categorie::where('id', '=', $key)->firstOrFail();
-					if($categorie->special == '1')
-					{
-
-						$count= $count+1;
-					}
 			}
-		}else
+		else
+			{
+				json_error($rs,500,"Size required");
+			}
+				
+		if(!empty($body['ingredient']))
+		{
+			foreach ($body['ingredient'] as $key => $value) {
+			$categorie = categorie::where('id', '=', $key)->firstOrFail();
+			if($categorie->special == '1')
+				$count= $count+1;
+			}
+		}
+		else
 		{
 			return  json_error($rs,500,"Ingredients required");
 		}
-		
-
-
 
 		if($commande->etat == "created")
 		{
@@ -228,11 +229,16 @@ Class PublicController
 	*/
 	public function DeleteCommande($req, $rs,$args)
 	{
-		try{
-			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-		}catch(\Exception $e){
-			return json_error($rs,500,'commande inexistante');
+		
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		if($commande->etat == "created")
+		{
 
+		}else
+		{
+
+		}
+		
 	}
 
 	//fonction pour etat d'une commande
