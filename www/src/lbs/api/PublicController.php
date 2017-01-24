@@ -202,11 +202,10 @@ Class PublicController
 							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
 							$sandwich->ingredients()->save($ingredient);
 						}
-
-						$resp = $resp->withStatus(200);
-				        $resp->getBody()
-				                 ->write(json_encode(array('Sandwich ajoute avec succes')));
-				        return $resp;
+				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()
+				        				  'ingredients' => $body['ingredient']);
+				        // Rajouter le tableau dans la reponse
 
 					}else{
 						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
@@ -237,10 +236,11 @@ Class PublicController
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 		if($commande->etat == "created")
 		{
-
+			$commande->delete();
+			return json_success($rs,200, 'La commande a été supprimée avec succes');
 		}else
 		{
-
+			return  json_error($rs,500,"La commande est déja payée");
 		}
 		
 	}
