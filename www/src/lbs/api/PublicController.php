@@ -140,7 +140,7 @@ Class PublicController
 
 
 	//fonction pour créer un sandwich d'une commande existante
-	public function CreateSandwich($req, $rs,$args)
+/*	public function CreateSandwich($req, $rs,$args)
 	{
 		$count = 0;
 
@@ -158,7 +158,6 @@ Class PublicController
 				json_error($rs,500,"Size required");
 
 
-
 		foreach ($body['ingredient'] as $key => $value) {
 
 					$categorie = categorie::where('id', '=', $key)->firstOrFail();
@@ -172,7 +171,6 @@ Class PublicController
 		{
 			return  json_error($rs,500,"Ingredients required");
 		}
-
 
 
 		if($commande->etat == "created")
@@ -212,7 +210,8 @@ Class PublicController
 
 		}
 
-	}
+	}*/
+
 	function DeleteSandwich($req, $rs,$args)
 	{
 
@@ -220,19 +219,36 @@ Class PublicController
 
 	//fonction pour etat d'une commande
 	public function getEtatCommande($req, $rs,$args){
-		$etat = Commande::where('id', '=', $args['id'])->get();
-		if(!$etat->isEmpty()){
+		$etat = Commande::where('id', '=', $args['id'])->firstOrFail();
+		if(!empty($etat)){
 			$rs = $rs->withStatus(200)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write($etat->toJson());
-
-
-
-			/*array_push($etat, ['commande' => (array)$etat,
+			//$rs->getBody()->write($etat->toJson());
+			$etatcommande = array();
+			$commandes = array("id"=>$etat->id , "token"=>$etat->token,"etat"=>$etat->etat,
+				"nom_client"=>$etat->nom_client,"email"=>$etat->email,"date"=>$etat->date,"montant"=>$etat->montant);
+				array_push($etatcommande, ['commande' => $commandes,
 				'links' => ['self' =>
-				['href' => $this->cont['router']->pathFor('commande',['id' => $etat->id])]]]);
+				['href' => $this->cont['router']->pathFor('etatCommande',['id' => $etat->id])]]]);
 
-			$rs->getBody()->write(json_encode($etat));*/
+			$rs->getBody()->write(json_encode($etatcommande));
+
+
+		/*	$col = array();
+			$ingredients = json_decode($ings->toJson());
+			if (!empty($ingredients))
+			{
+				foreach ($ingredients as $ings)
+				{
+					array_push($col, ['ingredient' => (array)$ings,
+					'links' => ['self' =>
+					['href' => $this->cont['router']->pathFor('ingredient',['id' => $ings->id])]]]);
+				}
+			}
+				$rs->getBody()->write(json_encode($col));*/
+
+
+
 		}else{
 			$rs = $rs->withStatus(404)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
@@ -240,4 +256,5 @@ Class PublicController
 			return $rs;
 		}
 	}
+
 }
