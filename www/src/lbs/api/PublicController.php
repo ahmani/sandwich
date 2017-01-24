@@ -272,4 +272,24 @@ Class PublicController
 
 		}
 	}
+
+	// Fonction pour supprimer un sandwich d'une commande 
+	// author : Chakib
+	public function deleteSandwich($req, $rs, $args)
+	{
+		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
+		$sandwichs = $commande->sandwichs;
+
+		foreach ($sandwichs as $sandwich) {
+			if ($sandwich->id == $args["id_sandwich"])
+			{
+				$commande->montant = $commande->montant - $sandwich->size->prix;
+				$commande->save();
+				$sandwich->delete();
+				return $rs->withStatus(200);
+			}
+		}
+
+		return  json_error($rs, 500, "Le sandwich n'existe pas");
+	}
 }
