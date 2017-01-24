@@ -6,20 +6,18 @@ use Illuminate\Database\Eloquent\Model as Model;
 Class Commande extends Model{
   protected $token;
   protected $primaryKey = "id";
-  protected $state; //{'created' ; 'paid' ; 'progress' ; 'ready' ; 'delivered'}
-  protected $nom_client;
-  protected $email;
-  protected $sandwichArray = array();
+  //protected $state; //{'created' ; 'paid' ; 'progress' ; 'ready' ; 'delivered'}
+  //protected $nom_client;
+  //protected $email;
   protected $table = "commande";
-  protected $date;
+  //protected $date;
   public $timestamps =false;
 
   public function __construct(){
-
 	}
 
-  public function addSandwich($sandwich){
-    $sandwichArray[] = $sandwich;
+  public function sandwich(){
+    return $this->hasMany('lbs\common\model\sandwich', 'id_commande');
   }
 
   public function getToken(){

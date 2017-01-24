@@ -10,6 +10,10 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
+//Pour les requetes GET et POST, il faut positionner le header : access-control-allow-origin 
+//Pour les requetes PUT, DELETE... il faut reponse à la requete option par un code 203 "no content"
+// et positionner les hearder : access-control-allow-origin , access-control-allow-methods, access-control-allow-headers
+
 		$capsule = new DB;
 
 		$parse = parse_ini_file("../src/conf/connex.ini");
@@ -103,11 +107,11 @@ use Illuminate\Database\Capsule\Manager as DB;
 	 			}
 		 	)->setName('etatCommande');
 
-        $app->delete('commandes/{id}/sandwichs/{ids}/delete',
+        $app->delete('/commande/{id}',
             function (Request $req, Response $resp, $args){
-                return (new lbs\api\PublicController($this))->DeleteSandwich($req, $resp, $args);
+                return (new lbs\api\PublicController($this))->DeleteCommande($req, $resp, $args);
             }
-            )->setName('deleteSandwich')
+            )->setName('deleteCommande')
              ->add('checkToken');
 
     $app->run();

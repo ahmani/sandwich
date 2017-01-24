@@ -126,94 +126,50 @@ Class PublicController
 		$com = new Commande;
 		//Creation du token
 		$factory = new \RandomLib\Factory;
-		$generator = $factory->getMediumStrengthGenerator();
-		$com->token = $generator->generateInt(32);
-
-		var_dump($req->getParsedBody());
+    $generator = $factory->getMediumStrengthGenerator();
+		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
 		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
-		$com->date = date("j-n-Y");
+		$com->date = date("Y-n-j");
 		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
-		$com->save();
 
+		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
+			$com->save();
+			json_success($rs, 200, "order have been added");
+		}else{
+			json_error($rs, 500, "fill all the fields");
+		}
 	}
 
 
-	//fonction pour créer un sandwich d'une commande existante
-/*	public function CreateSandwich($req, $rs,$args)
-	{
-		$count = 0;
 
-		if($args['id'])
-			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-		else
-			return json_error($rs,500,"Id commande required");
+	/*
+	* fonction pour créer un sandwich d'une commande existante
+	*
+	* Author : ikram
+	*/
 
-		$body = $req->getParsedBody();
-
-
-			if(!empty($body['taille']))
-				$size = size::where('id', '=', $body['taille'])->firstOrFail();
-			else
-				json_error($rs,500,"Size required");
-
-
-		foreach ($body['ingredient'] as $key => $value) {
-
-					$categorie = categorie::where('id', '=', $key)->firstOrFail();
-					if($categorie->special == '1')
-					{
-
-						$count= $count+1;
-					}
-			}
-		}else
-		{
-			return  json_error($rs,500,"Ingredients required");
-		}
-
-
-		if($commande->etat == "created")
-		{
-			if(!empty($body['ingredient']))
-			{
-				if($size->nb_ingredients == count($body['ingredient']))
-				{
-					if($count <= $size->nb_special)
-					{
-						$sandwich = new sandwich;
-						$sandwich->id_size = $body['taille'];
-						$sandwich->id_type = $body['type'];
-						$sandwich->save();
-
-						foreach ($body['ingredient'] as $key => $value) {
-							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
-							$sandwich->ingredients()->save($ingredient);
-						}
-
-						return json_error($rs,200,"sandwich ajoute avec succes");
-
-					}else{
-						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
-					}
-
-
-				}else
-				{
-					return  json_error($rs,500,"Nombre d'ingredients incorrecte");
-				}
-			}
-			else
-			{
-				return  json_error($rs,500,"Ingredient required");
-			}
-
-		}
-
-	}*/
 
 	function DeleteSandwich($req, $rs,$args)
+
+	}
+	/*
+	* fonction pour supprimer une commande
+	*
+	* Author : ikram
+	*/
+	public function DeleteCommande($req, $rs,$args)
+
 	{
+
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		if($commande->etat == "created")
+		{
+
+		}else
+		{
+
+		}
 
 	}
 
@@ -254,6 +210,7 @@ Class PublicController
 			->withHeader('Content-Type', 'application/json;charset=utf8');
 			$rs->getBody()->write(json_encode(array('Erreur' => 'not found')));
 			return $rs;
+
 		}
 	}
 
