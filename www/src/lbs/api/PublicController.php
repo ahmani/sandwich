@@ -139,7 +139,6 @@ Class PublicController
 			$rs->withStatus(201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
-			//json_success($rs, 201, "order have been added");
 		}else{
 			json_error($rs, 500, "fill all the fields");
 		}
