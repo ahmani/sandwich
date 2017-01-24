@@ -96,11 +96,11 @@ use Illuminate\Database\Capsule\Manager as DB;
             )->setName('createSandwich')
              ->add('checkToken');
 
-        $app->delete('commandes/{id}/sandwichs/{ids}/delete',
+        $app->delete('/commande/{id}',
             function (Request $req, Response $resp, $args){
-                return (new lbs\api\PublicController($this))->DeleteSandwich($req, $resp, $args);
+                return (new lbs\api\PublicController($this))->DeleteCommande($req, $resp, $args);
             }
-            )->setName('deleteSandwich')
+            )->setName('deleteCommande')
              ->add('checkToken');
 
     $app->run();

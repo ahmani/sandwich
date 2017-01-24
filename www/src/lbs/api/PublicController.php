@@ -122,7 +122,11 @@ Class PublicController
 	}
 
 
-	//fonction pour créer un sandwich d'une commande existante
+	/*
+	* fonction pour créer un sandwich d'une commande existante
+	*
+	* Author : ikram
+	*/
 	public function CreateSandwich($req, $rs,$args)
 	{
 		$count = 0;
@@ -154,8 +158,6 @@ Class PublicController
 			return  json_error($rs,500,"Ingredients required");
 		}
 		
-
-
 		if($commande->etat == "created")
 		{
 			if(!empty($body['ingredient']))
@@ -174,7 +176,10 @@ Class PublicController
 							$sandwich->ingredients()->save($ingredient);
 						}
 
-						return json_error($rs,200,"sandwich ajoute avec succes");
+						$resp = $resp->withStatus(200);
+				        $resp->getBody()
+				                 ->write(json_encode(array('Sandwich ajoute avec succes')));
+				        return $resp;
 
 					}else{
 						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
@@ -194,8 +199,17 @@ Class PublicController
 		}
 
 	}
-	function DeleteSandwich($req, $rs,$args)
+	/*
+	* fonction pour supprimer une commande
+	*
+	* Author : ikram
+	*/
+	public function DeleteCommande($req, $rs,$args)
 	{
-		
+		try{
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		}catch(\Exception $e){
+			return json_error($rs,500,'commande inexistante');
+		}
 	}
 }
