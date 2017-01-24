@@ -11,6 +11,8 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
         '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        'f25e06e7a2bc479393612710e88ed589' => __DIR__ . '/../..' . '/src/middlewares/mapi.php',
+        '1aa1e6cea06212c3bc92731cb7805b2c' => __DIR__ . '/../..' . '/src/lbs/utils/gestion_erreurs.php',
     );
 
     public static $prefixLengthsPsr4 = array (

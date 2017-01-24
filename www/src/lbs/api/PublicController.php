@@ -127,11 +127,15 @@ Class PublicController
 	{
 		$count = 0;
 
-		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		//$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 
 		$body = $req->getParsedBody();
-
-		$size = size::where('id', '=', $body['taille'])->firstOrFail();
+		
+			if(!empty($body['taille']))
+				$size = size::where('id', '=', $body['taille'])->firstOrFail();
+			else
+				json_error($rs,500,"Size required");
+				
 
 
 		foreach ($body['ingredient'] as $key => $value) {

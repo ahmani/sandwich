@@ -10,24 +10,6 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
-//TODO
-
-//creation de commande ; information de la personne(nom, email) , date_commande, livraison(date, heure)... ajout dans le hearder location 'commande/id'
-// réponse {"commande": {"nom"=>"michel","token" = > "https://github.com/ircmaxell/RandomLib".....}}
-
-//creation d'un token qui identifie la commande, passage du token pour chaque opération sur un commande, test du token avant chaque opération
-
-//Ajout des sandwichs
-
-//Gestion des erreurs :
-// 500,404,400, 201 created
-
-        function json_error($resp,$code,$message) {
-                    return $resp->withStatus( $code )
-                                ->getBody()
-                                ->write(json_encode(array('Erreur' => $message)));
-
-        };
 		$capsule = new DB;
 
 		$parse = parse_ini_file("../src/conf/connex.ini");
@@ -111,6 +93,7 @@ use Illuminate\Database\Capsule\Manager as DB;
             function (Request $req, Response $resp, $args){
                 return (new lbs\api\PublicController($this))->CreateSandwich($req, $resp, $args);
             }
-            )->setName('createSandwich');
+            )->setName('createSandwich')
+             ->add('checkToken');
 
     $app->run();

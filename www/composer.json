@@ -10,7 +10,8 @@
   "autoload" : {
     "psr-0": {
       "lbs\\": "src"
-    }
+    },
+    "files" : ["src/middlewares/mapi.php", "src/lbs/utils/gestion_erreurs.php"]
   }
 
 }

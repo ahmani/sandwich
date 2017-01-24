@@ -18,7 +18,6 @@ Class Ingredient extends Model
 	}
 	public function sandwichs()
 	{
-		return $this->belongsToMany('lbs\common\model\sandwich','ingredient_sandwich','id');
 		return $this->belongsToMany('lbs\common\model\sandwich','ingredient_sandwich',
 			'id_ingredient','id_sandwich');
 	}
