@@ -83,7 +83,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 		/* creer une commande */
 		$app->post('/commandes',
-			function (Request $req, Respong $resp, $args){
+			function (Request $req, Response $resp, $args){
 				return (new lbs\api\PublicController($this))->createCommande($req, $resp, $args);
 			}
 			)->setName('createCommande');
@@ -94,6 +94,13 @@ use Illuminate\Database\Capsule\Manager as DB;
                 return (new lbs\api\PublicController($this))->CreateSandwich($req, $resp, $args);
             }
             )->setName('createSandwich')
+             ->add('checkToken');
+
+        $app->delete('commandes/{id}/sandwichs/{ids}/delete',
+            function (Request $req, Response $resp, $args){
+                return (new lbs\api\PublicController($this))->DeleteSandwich($req, $resp, $args);
+            }
+            )->setName('deleteSandwich')
              ->add('checkToken');
 
     $app->run();

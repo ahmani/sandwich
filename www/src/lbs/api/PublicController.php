@@ -127,52 +127,75 @@ Class PublicController
 	{
 		$count = 0;
 
-		//$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		if($args['id'])
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		else
+			return json_error($rs,500,"Id commande required");
 
 		$body = $req->getParsedBody();
 		
-			if(!empty($body['taille']))
-				$size = size::where('id', '=', $body['taille'])->firstOrFail();
-			else
-				json_error($rs,500,"Size required");
+		if(!empty($body['taille']))
+			$size = size::where('id', '=', $body['taille'])->firstOrFail();
+		else
+			json_error($rs,500,"Size required");
 				
-
-
-		foreach ($body['ingredient'] as $key => $value) {
+		if(!empty($body['ingredient'] ))
+		{
+			foreach ($body['ingredient'] as $key => $value) {
 					$categorie = categorie::where('id', '=', $key)->firstOrFail();
 					if($categorie->special == '1')
 					{
 
 						$count= $count+1;
 					}
-		}
-
-		if($body['token'] == $commande->token && $commande->etat == "created")
-		{
-			if($size->nb_ingredients == count($body['ingredient']) && $count <= $size->nb_special)
-			{
-				$sandwich = new sandwich;
-				$sandwich->id_size = $body['taille'];
-				$sandwich->id_type = $body['type'];
-				$sandwich->save();
-
-				foreach ($body['ingredient'] as $key => $value) {
-
-					$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
-					$sandwich->ingredients()->save($ingredient);
-				}
-
 			}
-			return  json_error($rs,500,"error");
+		}else
+		{
+			return  json_error($rs,500,"Ingredients required");
+		}
+		
+
+
+		if($commande->etat == "created")
+		{
+			if(!empty($body['ingredient']))
+			{
+				if($size->nb_ingredients == count($body['ingredient'])) 
+				{
+					if($count <= $size->nb_special) 
+					{
+						$sandwich = new sandwich;
+						$sandwich->id_size = $body['taille'];
+						$sandwich->id_type = $body['type'];
+						$sandwich->save();
+
+						foreach ($body['ingredient'] as $key => $value) {
+							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
+							$sandwich->ingredients()->save($ingredient);
+						}
+
+						return json_error($rs,200,"sandwich ajoute avec succes");
+
+					}else{
+						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
+					}
+					
+
+				}else
+				{
+					return  json_error($rs,500,"Nombre d'ingredients incorrecte");
+				}
+			}
+			else
+			{
+				return  json_error($rs,500,"Ingredient required");
+			}
+			
 		}
 
-
-		//passer le token par ul
-		//tester la correspondance entre le token et id_commande
-		//test sur l'état de la commande
-		// test sur les ingrédients du sandwich
-		// Ajouter le sandwich
-
-
+	}
+	function DeleteSandwich($req, $rs,$args)
+	{
+		
 	}
 }
