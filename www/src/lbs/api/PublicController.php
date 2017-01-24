@@ -59,12 +59,18 @@ Class PublicController
 
 
 	/* fonction pour ressource ingredient/id*/
-	public function getingredient($req,$rs,$args)
-	{
-		$ing = Ingredient::where('id', '=', $args['id'])->firstOrFail();
-		$rs = $rs->withStatus(200)
+	public function getingredient($req,$rs,$args){
+		try{
+			$ing = Ingredient::where('id', '=', $args['id'])->firstOrFail();
+			$rs = $rs->withStatus(200)
+				->withHeader('Content-Type', 'application/json;charset=utf8');
+				$rs->getBody()->write($ing->toJson());
+		}catch(\Exception $e){
+			$rs = $rs->withStatus(404)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-		$rs->getBody()->write($ing->toJson());
+			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
+			return $rs;
+		}
 	}
 
 
@@ -72,19 +78,27 @@ Class PublicController
 	public function getIngredientsByCategory($req,$rs,$args)
 	{
 		$ings = Ingredient::where('cat_id','=',$args['cat_id'])->get();
-		$rs = $rs->withStatus(200)
+		if(!$ings->isEmpty()){
+			$rs = $rs->withStatus(200)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
-
-		$col = array();
-		$ingredients = json_decode($ings->toJson());
-
-		foreach ($ingredients as $ings)
-		{
-			array_push($col, ['ingredient' => (array)$ings,
-			  'links' => ['self' =>
-			  ['href' => $this->cont['router']->pathFor('ingredient',['id' => $ings->id])]]]);
+			$col = array();
+			$ingredients = json_decode($ings->toJson());
+			if (!empty($ingredients))
+			{
+				foreach ($ingredients as $ings)
+				{
+					array_push($col, ['ingredient' => (array)$ings,
+					'links' => ['self' =>
+					['href' => $this->cont['router']->pathFor('ingredient',['id' => $ings->id])]]]);
+				}
+			}
+				$rs->getBody()->write(json_encode($col));
+		}else{
+				$rs = $rs->withStatus(404)
+				->withHeader('Content-Type', 'application/json;charset=utf8');
+				$rs->getBody()->write(json_encode(array('Erreur' => 'not found')));
+				return $rs;
 		}
-		$rs->getBody()->write(json_encode($col));
 	}
 
 
@@ -99,7 +113,10 @@ Class PublicController
 				->withHeader('Content-Type', 'application/json;charset=utf8');
 			$rs->getBody()->write($ing->toJson());
 		}catch(\Exception $e){
-			return $this->json_last_error($rs, 404, $e->getMessage());
+			$rs = $rs->withStatus(404)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
+			return $rs;
 		}
 	}
 
@@ -130,12 +147,12 @@ Class PublicController
 		//$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 
 		$body = $req->getParsedBody();
-		
+
 			if(!empty($body['taille']))
 				$size = size::where('id', '=', $body['taille'])->firstOrFail();
 			else
 				json_error($rs,500,"Size required");
-				
+
 
 
 		foreach ($body['ingredient'] as $key => $value) {
@@ -174,5 +191,28 @@ Class PublicController
 		// Ajouter le sandwich
 
 
+	}
+
+	//fonction pour etat d'une commande
+	public function getEtatCommande($req, $rs,$args){
+		$etat = Commande::where('id', '=', $args['id'])->get();
+		if(!$etat->isEmpty()){
+			$rs = $rs->withStatus(200)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+			$rs->getBody()->write($etat->toJson());
+
+
+
+			/*array_push($etat, ['commande' => (array)$etat,
+				'links' => ['self' =>
+				['href' => $this->cont['router']->pathFor('commande',['id' => $etat->id])]]]);
+
+			$rs->getBody()->write(json_encode($etat));*/
+		}else{
+			$rs = $rs->withStatus(404)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+			$rs->getBody()->write(json_encode(array('Erreur' => 'not found')));
+			return $rs;
+		}
 	}
 }

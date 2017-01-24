@@ -88,12 +88,19 @@ use Illuminate\Database\Capsule\Manager as DB;
 			}
 			)->setName('createCommande');
 
-        //Créer un sandwich d'une commande existante
-        $app->post('/commande/{id}/sandwich',
-            function (Request $req, Response $resp, $args){
-                return (new lbs\api\PublicController($this))->CreateSandwich($req, $resp, $args);
-            }
-            )->setName('createSandwich')
-             ->add('checkToken');
+      //Créer un sandwich d'une commande existante
+      $app->post('/commande/{id}/sandwich',
+        function (Request $req, Response $resp, $args){
+          return (new lbs\api\PublicController($this))->CreateSandwich($req, $resp, $args);
+        }
+        )->setName('createSandwich')
+         ->add('checkToken');
+
+			//fonction pour etat d'une commande
+			$app->get('/etatcommande/{id}',
+	 			function (Request $req, Response $resp, $args){
+					return (new lbs\api\PublicController($this))->getEtatCommande($req,$resp,$args);
+	 			}
+		 	)->setName('etatCommande');
 
     $app->run();
