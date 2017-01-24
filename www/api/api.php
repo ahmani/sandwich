@@ -83,7 +83,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 		/* creer une commande */
 		$app->post('/commandes',
-			function (Request $req, Respong $resp, $args){
+			function (Request $req, Response $resp, $args){
 				return (new lbs\api\PublicController($this))->createCommande($req, $resp, $args);
 			}
 			)->setName('createCommande');
