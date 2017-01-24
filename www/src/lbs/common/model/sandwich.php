@@ -17,13 +17,17 @@ Class Sandwich extends Model
 	public function sizes()
 	{
 		return $this->hasMany('lbs\common\model\size','id_size');
-	} 	
+	}
 	public function types()
 	{
 		return $this->hasMany('lbs\common\model\type','id_type');
-	} 
+	}
 	public function ingredients()
 	{
 		return $this->belongsToMany('lbs\common\model\Ingredient','ingredient_sandwich','id_sandwich','id_ingredient');
+	}
+
+	public function Commande(){
+		return $this->belongsTo('lbs\common\model\Commande', 'id_commande');
 	}
 }
