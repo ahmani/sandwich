@@ -135,7 +135,11 @@ Class PublicController
 
 		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
 			$com->save();
-			json_success($rs, 200, "order have been added");
+			$rs->getBody()->write(json_encode($com));
+			$rs->withStatus(201);
+			$rs->withHeader('Location', '/commandes//'+$com->id);
+			return $rs;
+			//json_success($rs, 201, "order have been added");
 		}else{
 			json_error($rs, 500, "fill all the fields");
 		}
@@ -159,7 +163,7 @@ Class PublicController
 			{
 				return json_error($rs,500,"Id commande required");
 			}
-			
+
 		$body = $req->getParsedBody();
 
 		if(!empty($body['taille']))
@@ -170,7 +174,7 @@ Class PublicController
 			{
 				json_error($rs,500,"Size required");
 			}
-				
+
 		if(!empty($body['ingredient']))
 		{
 			foreach ($body['ingredient'] as $key => $value) {
@@ -232,7 +236,7 @@ Class PublicController
 	*/
 	public function DeleteCommande($req, $rs,$args)
 	{
-		
+
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 		if($commande->etat == "created")
 		{
@@ -242,7 +246,7 @@ Class PublicController
 		{
 			return  json_error($rs,500,"La commande est déja payée");
 		}
-		
+
 	}
 
 	//fonction pour etat d'une commande
