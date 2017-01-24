@@ -109,16 +109,19 @@ Class PublicController
 		$com = new Commande;
 		//Creation du token
 		$factory = new \RandomLib\Factory;
-		$generator = $factory->getMediumStrengthGenerator();
-		$com->token = $generator->generateInt(32);
-
-		var_dump($req->getParsedBody());
+    $generator = $factory->getMediumStrengthGenerator();
+		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
 		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
-		$com->date = date("j-n-Y");
+		$com->date = date("Y-n-j");
 		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
-		$com->save();
 
+		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
+			$com->save();
+			json_success($rs, 200, "order have been added");
+		}else{
+			json_error($rs, 500, "fill all the fields");
+		}
 	}
 
 
@@ -130,12 +133,12 @@ Class PublicController
 		//$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 
 		$body = $req->getParsedBody();
-		
+
 			if(!empty($body['taille']))
 				$size = size::where('id', '=', $body['taille'])->firstOrFail();
 			else
 				json_error($rs,500,"Size required");
-				
+
 
 
 		foreach ($body['ingredient'] as $key => $value) {
