@@ -126,19 +126,21 @@ Class PublicController
 		$com = new Commande;
 		//Creation du token
 		$factory = new \RandomLib\Factory;
-    	$generator = $factory->getMediumStrengthGenerator();
+    $generator = $factory->getMediumStrengthGenerator();
+
+	if(isset($req->getParsedBody()['nom_client']) && isset($req->getParsedBody()['email']) && isset($req->getParsedBody()['date'])){
 		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
 		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
 		$com->date = date("Y-n-j");
 
-		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
-			$com->save();
-			$rs = $rs->withJson($com, 201);
-			$rs->withHeader('Location', '/commandes//'+$com->id);
-			return $rs;
-		}else{
-			json_error($rs, 500, "fill all the fields");
+
+		$com->save();
+		$rs = $rs->withJson($com, 201);
+		$rs->withHeader('Location', '/commandes//'+$com->id);
+		return $rs;
+	}else{
+		json_error($rs, 500, "fill all the fields");
 		}
 	}
 
@@ -301,6 +303,6 @@ Class PublicController
 	public function payCommande($req, $rs, $args){
 		$commande = Commande::where('id', '=', $args['id'])-firstOrFail();
 		$commande->etat = "paid";
-
+		$commande->save();
 	}
 }

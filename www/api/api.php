@@ -10,7 +10,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
-//Pour les requetes GET et POST, il faut positionner le header : access-control-allow-origin 
+//Pour les requetes GET et POST, il faut positionner le header : access-control-allow-origin
 //Pour les requetes PUT, DELETE... il faut reponse à la requete option par un code 203 "no content"
 // et positionner les hearder : access-control-allow-origin , access-control-allow-methods, access-control-allow-headers
 
@@ -117,5 +117,11 @@ use Illuminate\Database\Capsule\Manager as DB;
         }
       )->setName('deleteCommande')
        ->add('checkToken');
+
+			 $app->put('/commande/{id}/pay',
+			 	function (Request $req, Response $resp, $args){
+					return (new lbs\api\PublicController($this))->payCommande($req, $resp, $args);
+				}
+			)->setName('payCommande');
 
     $app->run();
