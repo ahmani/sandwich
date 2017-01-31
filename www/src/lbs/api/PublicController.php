@@ -128,17 +128,19 @@ Class PublicController
 		$factory = new \RandomLib\Factory;
     $generator = $factory->getMediumStrengthGenerator();
 
-	if(isset($req->getParsedBody()['nom_client']) && isset($req->getParsedBody()['email']) && isset($req->getParsedBody()['date'])){
-		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
-		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
-		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
-		$com->date = date("Y-n-j");
+	if(isset($req->getParsedBody()['nom_client']) &&
+		 isset($req->getParsedBody()['email']) &&
+		 isset($req->getParsedBody()['date'])){
+			$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
+			$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
+			$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
+			$com->date = date("Y-n-j");
 
 
-		$com->save();
-		$rs = $rs->withJson($com, 201);
-		$rs->withHeader('Location', '/commandes//'+$com->id);
-		return $rs;
+			$com->save();
+			$rs = $rs->withJson($com, 201);
+			$rs->withHeader('Location', '/commandes//'+$com->id);
+			return $rs;
 	}else{
 		json_error($rs, 500, "fill all the fields");
 		}
@@ -300,8 +302,18 @@ Class PublicController
 	}
 
 	public function payCommande($req, $rs, $args){
-		$commande = Commande::where('id', '=', $args['id'])-firstOrFail();
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 		$commande->etat = "paid";
-		$commande->save();
-	}
+
+		if(isset($req->getParsedBody()['nom']) &&
+			 isset($req->getParsedBody()['prenom']) &&
+			 isset($req->getParsedBody()['numCarte']) &&
+			 isset($req->getParsedBody()['cryptogramme'])){
+				 $commande->save();
+				 return json_success($rs, 200, 'commande mise à jour');
+			 }
+			 else{
+				 return json_error($rs, 500, 'un problème est survenu');
+			 }
+		 }
 }
