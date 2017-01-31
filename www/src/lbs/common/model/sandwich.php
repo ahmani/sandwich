@@ -11,17 +11,20 @@ Class Sandwich extends Model
 	protected  $primaryKey = "id" ;
 	protected  $id_size;
 	protected  $id_type;
+	protected  $id_commande;
 
 	public $timestamps =false;
 
-	public function sizes()
+	public function size()
 	{
-		return $this->hasMany('lbs\common\model\size','id_size');
-	}
-	public function types()
+		return $this->hasOne('lbs\common\model\size', 'id', 'id_size');
+	} 	
+
+	public function type()
 	{
-		return $this->hasMany('lbs\common\model\type','id_type');
-	}
+		return $this->hasOne('lbs\common\model\type','id', 'id_type');
+	} 
+	
 	public function ingredients()
 	{
 		return $this->belongsToMany('lbs\common\model\Ingredient','ingredient_sandwich','id_sandwich','id_ingredient');

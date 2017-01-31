@@ -135,11 +135,9 @@ Class PublicController
 
 		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
 			$com->save();
-			$rs->getBody()->write(json_encode($com));
-			$rs->withStatus(201);
+			$rs = $rs->withJson($com, 201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
-			//json_success($rs, 201, "order have been added");
 		}else{
 			json_error($rs, 500, "fill all the fields");
 		}
@@ -277,5 +275,25 @@ Class PublicController
 			return $rs;
 
 		}
+	}
+
+	// Fonction pour supprimer un sandwich d'une commande
+	// author : Chakib
+	public function deleteSandwich($req, $rs, $args)
+	{
+		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
+		$sandwichs = $commande->sandwichs;
+
+		foreach ($sandwichs as $sandwich) {
+			if ($sandwich->id == $args["id_sandwich"])
+			{
+				$commande->montant = $commande->montant - $sandwich->size->prix;
+				$commande->save();
+				$sandwich->delete();
+				return $rs->withStatus(200);
+			}
+		}
+
+		return  json_error($rs, 500, "Le sandwich n'existe pas");
 	}
 }
