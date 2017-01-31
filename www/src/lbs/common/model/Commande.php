@@ -11,17 +11,18 @@ Class Commande extends Model{
   //protected $email;
   protected $table = "commande";
   //protected $date;
+  //protected $montant;
   public $timestamps =false;
 
   public function __construct(){
 	}
 
-  public function sandwich(){
+  public function sandwichs()
+  {
     return $this->hasMany('lbs\common\model\sandwich', 'id_commande');
   }
 
   public function getToken(){
     return $this->token;
   }
-
 }
