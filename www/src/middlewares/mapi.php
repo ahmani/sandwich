@@ -26,8 +26,7 @@ return $next($rq, $rs);
 
 function addheaders  ( Request $rq, Response $rs, callable $next ) {
 	$rs = $next($rq, $rs);
-            return $rs
-                    ->withHeader('Access-Control-Allow-Origin', '*')
+            return $rs->withHeader('Access-Control-Allow-Origin', '*')
                     ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
                     ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
