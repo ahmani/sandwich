@@ -7,7 +7,7 @@ use lbs\common\model\Ingredient;
 use lbs\common\model\Commande;
 use lbs\common\model\size;
 use lbs\common\model\type;
-use lbs\common\model\sandwich;
+use lbs\common\model\Sandwich;
 
 Class PublicController
 {
@@ -127,19 +127,24 @@ Class PublicController
 		//Creation du token
 		$factory = new \RandomLib\Factory;
     $generator = $factory->getMediumStrengthGenerator();
-		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
-		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
-		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
-		$com->date = date("Y-n-j");
-		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
 
-		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
+	if(isset($req->getParsedBody()['nom_client']) &&
+		 isset($req->getParsedBody()['email']) &&
+		 isset($req->getParsedBody()['date'])){
+			$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
+			$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
+			$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
+			$com->date = date("Y-n-j");
+			$com->date_retrait = filter_var($req->getParsedBody()['date_retrait'], FILTER_SANITIZE_STRING);
+			$com->montant = 0;
+
+
 			$com->save();
 			$rs = $rs->withJson($com, 201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
-		}else{
-			json_error($rs, 500, "fill all the fields");
+	}else{
+		json_error($rs, 500, "fill all the fields");
 		}
 	}
 
@@ -176,8 +181,9 @@ Class PublicController
 
 		if(!empty($body['ingredient']))
 		{
-			foreach ($body['ingredient'] as $key => $value) {
-			$categorie = categorie::where('id', '=', $key)->firstOrFail();
+			foreach ($body['ingredient'] as $value) {
+			$ingredient = ingredient::where('id','=', $value )->firstOrFail();
+			$categorie = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
 			if($categorie->special == '1')
 				$count= $count+1;
 			}
@@ -186,7 +192,6 @@ Class PublicController
 		{
 			return  json_error($rs,500,"Ingredients required");
 		}
-
 
 		if($commande->etat == "created")
 		{
@@ -199,16 +204,24 @@ Class PublicController
 						$sandwich = new sandwich;
 						$sandwich->id_size = $body['taille'];
 						$sandwich->id_type = $body['type'];
+						$sandwich->id_commande  = $args['id'];
 						$sandwich->save();
 
-						foreach ($body['ingredient'] as $key => $value) {
+						foreach ($body['ingredient'] as $value) {
 							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
 							$sandwich->ingredients()->save($ingredient);
+							$cat = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
+							$array[$cat->nom] = $ingredient->nom;
 						}
-				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
-				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail(),
-				        				  'ingredients' => $body['ingredient']);
-				        // Rajouter le tableau dans la reponse
+
+						$commande->montant += $sandwich->size->prix;
+						$commande->save();
+
+				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail()->nom,
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()->nom,
+				        				  'ingredients' => $array);
+				        $rs = $rs->withJson($response, 201);
+						return $rs;
 
 					}else{
 						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
@@ -295,6 +308,7 @@ Class PublicController
 		return  json_error($rs, 500, "Le sandwich n'existe pas");
 	}
 
+
 	// fonction  pour obtenir une facture pour une commande livree
 	public function getBill($req, $rs, $args){
 		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
@@ -302,7 +316,7 @@ Class PublicController
 		if($commande->etat == "delivered"){
 			foreach ($sandwich as sandwiches)
 
-	
+
 			$rs->getBody()->write(json_encode($factureCom));
 		}else{
 			$rs = $rs->withStatus(404)
@@ -316,4 +330,25 @@ Class PublicController
 		alors j'affiche la facture( affichage de la commande et de ses sandwiches(ingredients, prix etc))
 		*/
 	}
+
+	public function payCommande($req, $rs, $args){
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+		if(isset($req->getParsedBody()['nom']) &&
+			 isset($req->getParsedBody()['prenom']) &&
+			 isset($req->getParsedBody()['numCarte']) &&
+			 isset($req->getParsedBody()['cryptogramme'])){
+
+				 if($req->getParsedBody()['montant'] != $commande->montant){
+		 			return json_error($rs, 500, 'les montants ne correspondent pas');
+		 		}
+
+				 $commande->etat = "paid";
+				 $commande->save();
+				 return json_success($rs, 200, 'commande mise à jour');
+			 }
+			 else{
+				 return json_error($rs, 500, 'un problème est survenu');
+			 }
+		 }
 }

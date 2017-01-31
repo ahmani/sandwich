@@ -50,6 +50,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 		/* categorie/id */
         $app = new \Slim\App(new \Slim\Container($c));
+        $app->add('addheaders');
 
         $app->get('/categorie/{id}',
          function (Request $req, Response $resp, $args) {
@@ -105,7 +106,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 	 			function (Request $req, Response $resp, $args){
 					return (new lbs\api\PublicController($this))->getEtatCommande($req,$resp,$args);
 	 			}
-		 	)->setName('etatCommande');
+		 	) ->setName('etatCommande');
 
 			//fonction pour obtenir une facture pour une commande livree
 			$app->get('/factureCommande/{id}',
@@ -121,5 +122,11 @@ use Illuminate\Database\Capsule\Manager as DB;
         }
       )->setName('deleteCommande')
        ->add('checkToken');
+
+			 $app->put('/commande/{id}/pay',
+			 	function (Request $req, Response $resp, $args){
+					return (new lbs\api\PublicController($this))->payCommande($req, $resp, $args);
+				}
+			)->setName('payCommande');
 
     $app->run();

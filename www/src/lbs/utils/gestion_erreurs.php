@@ -8,14 +8,10 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 
         function json_error($resp,$code,$message) {
-            $resp = $resp->withStatus( $code );
-            $resp->getBody()
-                 ->write(json_encode(array('Erreur' => $message)));
+            $resp = $resp->withJson(array('Erreur' => $message), $code);
             return $resp;
         };
         function json_success($resp,$code,$message) {
-            $resp = $resp->withStatus( $code );
-            $resp->getBody()
-                 ->write(json_encode(array('Succes' => $message)));
+            $resp = $resp->withJson(array('Succes' => $message), $code);
             return $resp;
         };
