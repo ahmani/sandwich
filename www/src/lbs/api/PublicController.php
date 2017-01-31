@@ -135,8 +135,7 @@ Class PublicController
 
 		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
 			$com->save();
-			$rs->getBody()->write(json_encode($com));
-			$rs->withStatus(201);
+			$rs = $rs->withJson($com, 201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
 		}else{
