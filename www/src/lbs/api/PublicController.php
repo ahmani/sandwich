@@ -193,27 +193,29 @@ Class PublicController
 			{
 				if($size->nb_ingredients == count($body['ingredient']))
 				{
-					var_dump($count);
 					if($count <= $size->nb_special)
 					{
 						$sandwich = new sandwich;
 						$sandwich->id_size = $body['taille'];
 						$sandwich->id_type = $body['type'];
+						$sandwich->id_commande  = $args['id'];
 						$sandwich->save();
 
 						foreach ($body['ingredient'] as $key => $value) {
 							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
 							$sandwich->ingredients()->save($ingredient);
+							$cat = categorie::where('id', '=', $key)->firstOrFail();
+							$array[$cat->nom] = $ingredient->nom;
 						}
-				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
-				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail(),
-				        				  'ingredients' => $body['ingredient']);
-				        $rs->getBody()->write(json_encode($response));
-						$rs->withStatus(201);
-						//$rs->withHeader('Location', '/commandes/'+$com->id);
-						return $rs;
 
-				        // Rajouter le tableau dans la reponse
+						$commande->montant += $sandwich->size->prix;
+						$commande->save();
+
+				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail()->nom,
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()->nom,
+				        				  'ingredients' => $array);
+				        $rs = $rs->withJson($response, 201);
+						return $rs;
 
 					}else{
 						return  json_error($rs,500,"Nombre d'ingredients speciale incorrecte");
