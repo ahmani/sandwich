@@ -1,6 +1,6 @@
 <?php
 
-namespace lbs\privates\api;
+namespace lbs\api;
 
 use lbs\common\model\Categorie;
 use lbs\common\model\Ingredient;
@@ -21,7 +21,7 @@ Class PrivateController
 
 	public function getcommandes($req,$rs,$args)
 	{
-		die('ddd');
+		
 	}
 
 

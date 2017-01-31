@@ -175,8 +175,9 @@ Class PublicController
 
 		if(!empty($body['ingredient']))
 		{
-			foreach ($body['ingredient'] as $key => $value) {
-			$categorie = categorie::where('id', '=', $key)->firstOrFail();
+			foreach ($body['ingredient'] as $value) {
+			$ingredient = ingredient::where('id','=', $value )->firstOrFail();
+			$categorie = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
 			if($categorie->special == '1')
 				$count= $count+1;
 			}
@@ -200,10 +201,10 @@ Class PublicController
 						$sandwich->id_commande  = $args['id'];
 						$sandwich->save();
 
-						foreach ($body['ingredient'] as $key => $value) {
+						foreach ($body['ingredient'] as $value) {
 							$ingredient = ingredient::where('id', '=', $value)->firstOrFail();
 							$sandwich->ingredients()->save($ingredient);
-							$cat = categorie::where('id', '=', $key)->firstOrFail();
+							$cat = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
 							$array[$cat->nom] = $ingredient->nom;
 						}
 
