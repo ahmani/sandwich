@@ -107,11 +107,12 @@ use Illuminate\Database\Capsule\Manager as DB;
 	 			}
 		 	)->setName('etatCommande');
 
-        $app->delete('/commande/{id}',
-            function (Request $req, Response $resp, $args){
-                return (new lbs\api\PublicController($this))->DeleteCommande($req, $resp, $args);
-            }
-            )->setName('deleteCommande')
-             ->add('checkToken');
+      // Supprimer une commande
+      $app->delete('/commande/{id}',
+        function (Request $req, Response $resp, $args){
+            return (new lbs\api\PublicController($this))->DeleteCommande($req, $resp, $args);
+        }
+      )->setName('deleteCommande')
+       ->add('checkToken');
 
     $app->run();
