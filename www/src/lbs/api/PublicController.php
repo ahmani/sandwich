@@ -314,8 +314,8 @@ Class PublicController
 		 			return json_error($rs, 500, 'les montants ne correspondent pas');
 		 		}
 
-				 $commande->save();
 				 $commande->etat = "paid";
+				 $commande->save();
 				 return json_success($rs, 200, 'commande mise à jour');
 			 }
 			 else{
