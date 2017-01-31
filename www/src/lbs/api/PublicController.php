@@ -187,7 +187,6 @@ Class PublicController
 			return  json_error($rs,500,"Ingredients required");
 		}
 
-
 		if($commande->etat == "created")
 		{
 			if(!empty($body['ingredient']))
