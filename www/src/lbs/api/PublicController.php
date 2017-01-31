@@ -131,7 +131,6 @@ Class PublicController
 		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
 		$com->date = date("Y-n-j");
-		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
 
 		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
 			$com->save();
@@ -295,5 +294,11 @@ Class PublicController
 		}
 
 		return  json_error($rs, 500, "Le sandwich n'existe pas");
+	}
+
+	public function payCommande($req, $rs, $args){
+		$commande = Commande::where('id', '=', $args['id'])-firstOrFail();
+		$commande->etat = "paid";
+
 	}
 }
