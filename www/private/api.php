@@ -51,7 +51,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
         $app->get('/commandes',
             function (Request $req, Response $resp, $args) {
-             		return (new lbs\privates\api\PrivateController($this))->getcommandes($req,$resp,$args);
+             		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
             }
         )->setName('commandes');
 
