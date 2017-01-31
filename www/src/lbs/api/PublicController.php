@@ -304,13 +304,18 @@ Class PublicController
 
 	public function payCommande($req, $rs, $args){
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-		$commande->etat = "paid";
 
 		if(isset($req->getParsedBody()['nom']) &&
 			 isset($req->getParsedBody()['prenom']) &&
 			 isset($req->getParsedBody()['numCarte']) &&
 			 isset($req->getParsedBody()['cryptogramme'])){
+
+				 if($req->getParsedBody()['montant'] != $commande->montant){
+		 			return json_error($rs, 500, 'les montants ne correspondent pas');
+		 		}
+
 				 $commande->save();
+				 $commande->etat = "paid";
 				 return json_success($rs, 200, 'commande mise à jour');
 			 }
 			 else{
