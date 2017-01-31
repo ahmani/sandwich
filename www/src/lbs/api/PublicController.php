@@ -135,6 +135,7 @@ Class PublicController
 			$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 			$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
 			$com->date = date("Y-n-j");
+			$com->montant = 0;
 
 
 			$com->save();
