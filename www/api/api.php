@@ -10,7 +10,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 use Illuminate\Database\Capsule\Manager as DB;
 
 
-//Pour les requetes GET et POST, il faut positionner le header : access-control-allow-origin 
+//Pour les requetes GET et POST, il faut positionner le header : access-control-allow-origin
 //Pour les requetes PUT, DELETE... il faut reponse à la requete option par un code 203 "no content"
 // et positionner les hearder : access-control-allow-origin , access-control-allow-methods, access-control-allow-headers
 
@@ -106,6 +106,13 @@ use Illuminate\Database\Capsule\Manager as DB;
 					return (new lbs\api\PublicController($this))->getEtatCommande($req,$resp,$args);
 	 			}
 		 	)->setName('etatCommande');
+
+			//fonction pour obtenir une facture pour une commande livree
+			$app->get('/factureCommande/{id}',
+				function (Request $req, Response $resp, $args){
+					return (new lbs\api\PublicController($this))->getBill($req,$resp,$args);
+				}
+			)->setName('factureCommande');
 
       // Supprimer une commande
       $app->delete('/commande/{id}',

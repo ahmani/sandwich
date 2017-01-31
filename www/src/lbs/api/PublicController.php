@@ -266,21 +266,6 @@ Class PublicController
 			$rs->getBody()->write(json_encode($etatcommande));
 
 
-		/*	$col = array();
-			$ingredients = json_decode($ings->toJson());
-			if (!empty($ingredients))
-			{
-				foreach ($ingredients as $ings)
-				{
-					array_push($col, ['ingredient' => (array)$ings,
-					'links' => ['self' =>
-					['href' => $this->cont['router']->pathFor('ingredient',['id' => $ings->id])]]]);
-				}
-			}
-				$rs->getBody()->write(json_encode($col));*/
-
-
-
 		}else{
 			$rs = $rs->withStatus(404)
 			->withHeader('Content-Type', 'application/json;charset=utf8');
@@ -308,5 +293,27 @@ Class PublicController
 		}
 
 		return  json_error($rs, 500, "Le sandwich n'existe pas");
+	}
+
+	// fonction  pour obtenir une facture pour une commande livree
+	public function getBill($req, $rs, $args){
+		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
+		$sandwich = Sandwich::where("id_commande", "=", $args["id_commande"])->firstOrFail();
+		if($commande->etat == "delivered"){
+			foreach ($sandwich as sandwiches)
+
+	
+			$rs->getBody()->write(json_encode($factureCom));
+		}else{
+			$rs = $rs->withStatus(404)
+			->withHeader('Content-Type', 'application/json;charset=utf8');
+			$rs->getBody()->write(json_encode(array('Erreur' => 'la commande n\'est pas encore livree')));
+			return $rs;
+		}
+		/*
+		je recupere l'etat de la commande le tableau contenant les sandwiches d'une commande.
+		si l'etat de la commande = delivered
+		alors j'affiche la facture( affichage de la commande et de ses sandwiches(ingredients, prix etc))
+		*/
 	}
 }
