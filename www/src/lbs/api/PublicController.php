@@ -206,7 +206,7 @@ Class PublicController
 							$sandwich->ingredients()->save($ingredient);
 						}
 				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
-				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail(),
 				        				  'ingredients' => $body['ingredient']);
 				        // Rajouter le tableau dans la reponse
 
@@ -272,7 +272,7 @@ Class PublicController
 		}
 	}
 
-	// Fonction pour supprimer un sandwich d'une commande 
+	// Fonction pour supprimer un sandwich d'une commande
 	// author : Chakib
 	public function deleteSandwich($req, $rs, $args)
 	{
