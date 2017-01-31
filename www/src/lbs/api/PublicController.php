@@ -126,7 +126,7 @@ Class PublicController
 		$com = new Commande;
 		//Creation du token
 		$factory = new \RandomLib\Factory;
-    $generator = $factory->getMediumStrengthGenerator();
+    	$generator = $factory->getMediumStrengthGenerator();
 		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
 		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
 		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
@@ -195,6 +195,7 @@ Class PublicController
 			{
 				if($size->nb_ingredients == count($body['ingredient']))
 				{
+					var_dump($count);
 					if($count <= $size->nb_special)
 					{
 						$sandwich = new sandwich;
@@ -207,8 +208,13 @@ Class PublicController
 							$sandwich->ingredients()->save($ingredient);
 						}
 				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
-				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail(),
 				        				  'ingredients' => $body['ingredient']);
+				        $rs->getBody()->write(json_encode($response));
+						$rs->withStatus(201);
+						//$rs->withHeader('Location', '/commandes/'+$com->id);
+						return $rs;
+
 				        // Rajouter le tableau dans la reponse
 
 					}else{

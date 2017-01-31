@@ -50,6 +50,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 		/* categorie/id */
         $app = new \Slim\App(new \Slim\Container($c));
+        $app->add('addheaders');
 
         $app->get('/categorie/{id}',
          function (Request $req, Response $resp, $args) {
@@ -105,7 +106,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 	 			function (Request $req, Response $resp, $args){
 					return (new lbs\api\PublicController($this))->getEtatCommande($req,$resp,$args);
 	 			}
-		 	)->setName('etatCommande');
+		 	) ->setName('etatCommande');
+
+
 
         $app->delete('/commande/{id}',
             function (Request $req, Response $resp, $args){
