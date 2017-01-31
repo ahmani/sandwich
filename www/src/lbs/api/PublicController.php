@@ -126,20 +126,25 @@ Class PublicController
 		$com = new Commande;
 		//Creation du token
 		$factory = new \RandomLib\Factory;
-    	$generator = $factory->getMediumStrengthGenerator();
-		$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
-		$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
-		$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
-		$com->date = date("Y-n-j");
-		$com->montant = filter_var($req->getParsedBody()['montant'], FILTER_SANITIZE_NUMBER_INT);
+    $generator = $factory->getMediumStrengthGenerator();
 
-		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
+	if(isset($req->getParsedBody()['nom_client']) &&
+		 isset($req->getParsedBody()['email']) &&
+		 isset($req->getParsedBody()['date'])){
+			$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
+			$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
+			$com->email = filter_var($req->getParsedBody()['email'], FILTER_SANITIZE_EMAIL);
+			$com->date = date("Y-n-j");
+			$com->date_retrait = filter_var($req->getParsedBody()['date_retrait'], FILTER_SANITIZE_STRING);
+			$com->montant = 0;
+
+
 			$com->save();
 			$rs = $rs->withJson($com, 201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
-		}else{
-			json_error($rs, 500, "fill all the fields");
+	}else{
+		json_error($rs, 500, "fill all the fields");
 		}
 	}
 
@@ -298,4 +303,25 @@ Class PublicController
 
 		return  json_error($rs, 500, "Le sandwich n'existe pas");
 	}
+
+	public function payCommande($req, $rs, $args){
+		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+		if(isset($req->getParsedBody()['nom']) &&
+			 isset($req->getParsedBody()['prenom']) &&
+			 isset($req->getParsedBody()['numCarte']) &&
+			 isset($req->getParsedBody()['cryptogramme'])){
+
+				 if($req->getParsedBody()['montant'] != $commande->montant){
+		 			return json_error($rs, 500, 'les montants ne correspondent pas');
+		 		}
+
+				 $commande->etat = "paid";
+				 $commande->save();
+				 return json_success($rs, 200, 'commande mise à jour');
+			 }
+			 else{
+				 return json_error($rs, 500, 'un problème est survenu');
+			 }
+		 }
 }
