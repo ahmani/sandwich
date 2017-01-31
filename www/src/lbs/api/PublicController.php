@@ -135,11 +135,9 @@ Class PublicController
 
 		if(isset($com->token) && isset($com->nom_client) && isset($com->email) && isset($com->date) && isset($com->montant)){
 			$com->save();
-			$rs->getBody()->write(json_encode($com));
-			$rs->withStatus(201);
+			$rs = $rs->withJson($com, 201);
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
-			//json_success($rs, 201, "order have been added");
 		}else{
 			json_error($rs, 500, "fill all the fields");
 		}
@@ -208,7 +206,7 @@ Class PublicController
 							$sandwich->ingredients()->save($ingredient);
 						}
 				        $response = array('Taille' => size::where('id', '=', $sandwich->id_size)->firstOrFail(),
-				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail()
+				        				  'Type' => Type::where('id', '=', $sandwich->id_type)->firstOrFail(),
 				        				  'ingredients' => $body['ingredient']);
 				        // Rajouter le tableau dans la reponse
 
