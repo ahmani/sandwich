@@ -7,7 +7,7 @@ use lbs\common\model\Ingredient;
 use lbs\common\model\Commande;
 use lbs\common\model\size;
 use lbs\common\model\type;
-use lbs\common\model\sandwich;
+use lbs\common\model\Sandwich;
 
 Class PublicController
 {

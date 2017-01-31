@@ -2,6 +2,7 @@
 
 require_once "../vendor/autoload.php";
 require_once "../src/conf/autoload.php";
+require_once "../src/lbs/utils/CommonsFunctions.php";
 
 use \lbs\common\model\Categorie as Categorie;
 use \lbs\common\model\Commande;
