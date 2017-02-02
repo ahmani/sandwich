@@ -52,13 +52,15 @@ Class PrivateController
 				return json_error($rs,500,"Id commande required");
 			}
 
-			$tab = GetSandwichsByCommande($value->id);
+			$tab = GetSandwichsByCommande($commande->id);
 			$commande_details[] = array("Nom du client" => $commande->nom_client,
 						   "Email" => $commande->email,
 						   "Date de création" => $commande->date,
 						   "Date de retrait" => $commande->date_retrait,
 						   "Etat" => $commande->etat,
 						   "Sandwichs" => $tab);
+			$resp = $resp->withJson($commande_details, 200);
+			return $resp;
 
 	}
 
