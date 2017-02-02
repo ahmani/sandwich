@@ -54,7 +54,11 @@ use Illuminate\Database\Capsule\Manager as DB;
 
         $app->get('/commandes',
             function (Request $req, Response $resp, $args) {
+                if(empty($req->getQueryParams()))
              		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
+                elseif ($req->getQueryParams()['etat'] || $req->getQueryParams()['date_livraison']) {
+                    return (new lbs\api\PrivateController($this))->getFiltredCommandes($req,$resp,$args);
+                }
             }
         )->setName('commandes');
 
