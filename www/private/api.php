@@ -56,9 +56,9 @@ use Illuminate\Database\Capsule\Manager as DB;
             function (Request $req, Response $resp, $args) {
                 if(empty($req->getQueryParams()))
              		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
-                elseif ($req->getQueryParams()['etat'] || $req->getQueryParams()['date_livraison']) {
+                elseif (isset($req->getQueryParams()['etat']) || isset($req->getQueryParams()['date_livraison'])) {
                     return (new lbs\api\PrivateController($this))->getFiltredCommandes($req,$resp,$args);
-                }elseif ($req->getQueryParams()['offset'] && $req->getQueryParams()['limit']){
+                }elseif (isset($req->getQueryParams()['offset']) && isset($req->getQueryParams()['limit'])){
                   return (new lbs\api\PrivateController($this))->getPaginatedCommandes($req,$resp,$args);
                 }
             }
