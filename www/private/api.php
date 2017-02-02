@@ -4,6 +4,8 @@ require_once "../vendor/autoload.php";
 require_once "../src/conf/autoload.php";
 require_once "../src/lbs/utils/CommonsFunctions.php";
 
+//define("COMMANDE_CREATED", "created");
+
 use \lbs\common\model\Categorie as Categorie;
 use \lbs\common\model\Commande;
 use \Psr\Http\Message\ServerRequestInterface as Request;
@@ -55,6 +57,12 @@ use Illuminate\Database\Capsule\Manager as DB;
              		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
             }
         )->setName('commandes');
+
+        $app->get('/commande/{id}',
+            function (Request $req, Response $resp, $args) {
+                    return (new lbs\api\PrivateController($this))->getCommandeDetail($req,$resp,$args);
+            }
+        )->setName('commande');
 
 		
 
