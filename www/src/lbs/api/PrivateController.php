@@ -61,9 +61,15 @@ Class PrivateController
 						   "Sandwichs" => $tab);
 			$resp = $resp->withJson($commande_details, 200);
 			return $resp;
-
 	}
 
+	public function getPaginatedCommandes($req, $resp, $args){
+		$offset = $req->getQueryParams()['offset'];
+		$limit = $req->getQueryParams()['limit'];
 
+		$com = Commande::take($limit)->offset($offset)->get();
+		$resp = $resp->withJson($com, 200);
+		return $resp;
+	}
 
 }

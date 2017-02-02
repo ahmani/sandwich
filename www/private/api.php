@@ -20,7 +20,7 @@ use Illuminate\Database\Capsule\Manager as DB;
   $capsule->setAsGlobal();
   $capsule->bootEloquent();
 
-		
+
 
         $c = [
             'settings' => [
@@ -54,7 +54,15 @@ use Illuminate\Database\Capsule\Manager as DB;
 
         $app->get('/commandes',
             function (Request $req, Response $resp, $args) {
-             		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
+                if(empty($req->getQueryParams()))
+             		    return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
+
+                elseif (isset($req->getQueryParams()['etat']) || isset($req->getQueryParams()['date_livraison'])) {
+                    return (new lbs\api\PrivateController($this))->getFiltredCommandes($req,$resp,$args);
+                    
+                }elseif (isset($req->getQueryParams()['offset']) && isset($req->getQueryParams()['limit'])){
+                    return (new lbs\api\PrivateController($this))->getPaginatedCommandes($req,$resp,$args);
+                }
             }
         )->setName('commandes');
 
@@ -64,6 +72,6 @@ use Illuminate\Database\Capsule\Manager as DB;
             }
         )->setName('commande');
 
-		
+
 
     $app->run();
