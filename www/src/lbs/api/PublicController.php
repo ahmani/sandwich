@@ -31,10 +31,7 @@ Class PublicController
 			return $rs;
 
 		}catch(\Exception $e){
-			$rs = $rs->withStatus(404)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
-			return $rs;
+			return json_error($rs, 404, $e->getMessage());
 		}
 	}
 
@@ -66,15 +63,12 @@ Class PublicController
 				->withHeader('Content-Type', 'application/json;charset=utf8');
 				$rs->getBody()->write($ing->toJson());
 		}catch(\Exception $e){
-			$rs = $rs->withStatus(404)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
-			return $rs;
+			return json_error($rs, 404, $e->getMessage());
 		}
 	}
 
 
-	/* fonction pour collection d'ingredients pour 1 categorie */
+	/* fonction pour collection d'ingredients pour 1 categorie ingredients/cat_id*/
 	public function getIngredientsByCategory($req,$rs,$args)
 	{
 		$ings = Ingredient::where('cat_id','=',$args['cat_id'])->get();
@@ -94,10 +88,7 @@ Class PublicController
 			}
 				$rs->getBody()->write(json_encode($col));
 		}else{
-				$rs = $rs->withStatus(404)
-				->withHeader('Content-Type', 'application/json;charset=utf8');
-				$rs->getBody()->write(json_encode(array('Erreur' => 'not found')));
-				return $rs;
+			return json_error($rs, 404, 'Not found');
 		}
 	}
 
@@ -113,10 +104,7 @@ Class PublicController
 				->withHeader('Content-Type', 'application/json;charset=utf8');
 			$rs->getBody()->write($ing->toJson());
 		}catch(\Exception $e){
-			$rs = $rs->withStatus(404)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write(json_encode(array('Erreur' => $e->getMessage())));
-			return $rs;
+			return json_error($rs, 404, $e->getMessage());
 		}
 	}
 
@@ -262,29 +250,25 @@ Class PublicController
 
 	}
 
-	//fonction pour etat d'une commande
+	//fonction pour etat d'une commande etatcommande/id
 	public function getEtatCommande($req, $rs,$args){
-		$etat = Commande::where('id', '=', $args['id'])->firstOrFail();
-		if(!empty($etat)){
-			$rs = $rs->withStatus(200)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			//$rs->getBody()->write($etat->toJson());
-			$etatcommande = array();
-			$commandes = array("id"=>$etat->id , "token"=>$etat->token,"etat"=>$etat->etat,
+		try{
+			$etat = Commande::where('id', '=', $args['id'])->firstOrFail();
+			if(!empty($etat)){
+				$rs = $rs->withStatus(200)
+				->withHeader('Content-Type', 'application/json;charset=utf8');
+				//$rs->getBody()->write($etat->toJson());
+				$etatcommande = array();
+				$commandes = array("id"=>$etat->id , "token"=>$etat->token,"etat"=>$etat->etat,
 				"nom_client"=>$etat->nom_client,"email"=>$etat->email,"date"=>$etat->date,"montant"=>$etat->montant);
 				array_push($etatcommande, ['commande' => $commandes,
 				'links' => ['self' =>
 				['href' => $this->cont['router']->pathFor('etatCommande',['id' => $etat->id])]]]);
 
-			$rs->getBody()->write(json_encode($etatcommande));
-
-
-		}else{
-			$rs = $rs->withStatus(404)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write(json_encode(array('Erreur' => 'not found')));
-			return $rs;
-
+				$rs->getBody()->write(json_encode($etatcommande));
+			}
+		}catch(\Exception $e){
+			return json_error($rs,404,$e->getMessage());
 		}
 	}
 
@@ -309,26 +293,15 @@ Class PublicController
 	}
 
 
-	// fonction  pour obtenir une facture pour une commande livree
+	// fonction  pour obtenir une facture pour une commande livree factureCommande/id
 	public function getBill($req, $rs, $args){
 		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
-		$sandwich = Sandwich::where("id_commande", "=", $args["id_commande"])->firstOrFail();
-		if($commande->etat == "delivered"){
-			foreach ($sandwich as sandwiches)
-
-
-			$rs->getBody()->write(json_encode($factureCom));
+		if(($commande->etat == "delivered") && (!empty($commande))){
+			$mesSandwiches = GetSandwichsByCommande($commande->id);
+			$rs->getBody()->write(json_encode($mesSandwiches));
 		}else{
-			$rs = $rs->withStatus(404)
-			->withHeader('Content-Type', 'application/json;charset=utf8');
-			$rs->getBody()->write(json_encode(array('Erreur' => 'la commande n\'est pas encore livree')));
-			return $rs;
+				return json_error($rs,404,'la commande n\'est pas encore livree');
 		}
-		/*
-		je recupere l'etat de la commande le tableau contenant les sandwiches d'une commande.
-		si l'etat de la commande = delivered
-		alors j'affiche la facture( affichage de la commande et de ses sandwiches(ingredients, prix etc))
-		*/
 	}
 
 	public function payCommande($req, $rs, $args){
