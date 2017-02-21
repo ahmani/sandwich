@@ -8,6 +8,7 @@ use lbs\common\model\Commande;
 use lbs\common\model\size;
 use lbs\common\model\type;
 use lbs\common\model\Sandwich;
+use lbs\common\utils\CommonsFunctions;
 
 Class PublicController
 {
@@ -297,8 +298,9 @@ Class PublicController
 	public function getBill($req, $rs, $args){
 		$commande = Commande::where("id", "=", $args["id"])->firstOrFail();
 		if(($commande->etat == "delivered") && (!empty($commande))){
-			$mesSandwiches = GetSandwichsByCommande($commande->id);
-			$rs->getBody()->write(json_encode($mesSandwiches));
+			$montant = $commande->montant;
+			$facture = array(GetSandwichsByCommande($commande->id), "montant de la commande"=>$montant);
+			$rs->getBody()->write(json_encode($facture));
 		}else{
 				return json_error($rs,404,'la commande n\'est pas encore livree');
 		}
