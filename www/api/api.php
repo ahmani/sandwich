@@ -102,6 +102,14 @@ use Illuminate\Database\Capsule\Manager as DB;
         )->setName('createSandwich')
          ->add('checkToken');
 
+      // Modifier un sandwich d'une commande existante
+        $app->put('/commandes/{id}/sandwichs/{id_sandwich}',
+            function (Request $req, Response $resp, $args){
+                return (new lbs\api\PublicController($this))->updateSandwich($req, $resp, $args);
+            }
+        )->setName('updateSandwich')
+        ->add('checkToken');
+
 			//fonction pour etat d'une commande
 			$app->get('/etatcommande/{id}',
 	 			function (Request $req, Response $resp, $args){
@@ -124,10 +132,24 @@ use Illuminate\Database\Capsule\Manager as DB;
       )->setName('deleteCommande')
        ->add('checkToken');
 
-			 $app->put('/commande/{id}/pay',
+			$app->put('/commande/{id}/pay',
 			 	function (Request $req, Response $resp, $args){
 					return (new lbs\api\PublicController($this))->payCommande($req, $resp, $args);
 				}
 			)->setName('payCommande');
+
+      // Modifier la date de livraison d'une commande
+      $app->put('/commandes/{id}',
+        function (Request $req, Response $resp, $args){
+          return (new lbs\api\PublicController($this))->updateCommande($req, $resp, $args);
+        }
+      )->setName('updateCommande');
+
+      // Modifier la date de livraison d'une commande
+      $app->get('/commandes/{id}',
+        function (Request $req, Response $resp, $args){
+          return (new lbs\api\PublicController($this))->getCommandeDescritpion($req, $resp, $args);
+        }
+      )->setName('getCommandeDescritpion');
 
     $app->run();

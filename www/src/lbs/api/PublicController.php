@@ -310,20 +310,155 @@ Class PublicController
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 
 		if(isset($req->getParsedBody()['nom']) &&
-			 isset($req->getParsedBody()['prenom']) &&
-			 isset($req->getParsedBody()['numCarte']) &&
-			 isset($req->getParsedBody()['cryptogramme'])){
+			isset($req->getParsedBody()['prenom']) &&
+			isset($req->getParsedBody()['numCarte']) &&
+			isset($req->getParsedBody()['cryptogramme'])) {
 
-				 if($req->getParsedBody()['montant'] != $commande->montant){
+				if($req->getParsedBody()['montant'] != $commande->montant){
 		 			return json_error($rs, 500, 'les montants ne correspondent pas');
 		 		}
 
-				 $commande->etat = "paid";
-				 $commande->save();
-				 return json_success($rs, 200, 'commande mise à jour');
-			 }
-			 else{
-				 return json_error($rs, 500, 'un problème est survenu');
-			 }
-		 }
+				$commande->etat = "paid";
+				$commande->save();
+				return json_success($rs, 200, 'commande mise à jour');
+		} else{
+			return json_error($rs, 500, 'un problème est survenu');
+		}
+	}
+
+	// Modifier un sandwich d'une commande existante
+	public function updateSandwich($req, $rs, $args)
+	{
+		$count = 0;
+
+		if($args['id'])
+		{
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+		} else {
+			return json_error($rs, 500, "Id commande required");
+		}
+
+		$body = $req->getParsedBody();
+
+		if(empty($body['taille']))
+		{	
+			json_error($rs, 500, "Size required");
+		}
+
+		if(!empty($body['ingredient']))
+		{
+			foreach ($body['ingredient'] as $value) 
+			{
+				$ingredient = Ingredient::where("id", "=", $value)->firstOrFail();
+				$categorie = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
+
+				if($categorie->special == '1')
+					$count = $count + 1;
+			}
+		} else {
+			return  json_error($rs, 500, "Ingredients required");
+		}
+
+		$sandwich = sandwich::where("id", "=", $args["id_sandwich"])->firstOrFail();
+
+		if ($commande->etat == "created")
+		{
+			if ($sandwich->id_size != $body["taille"])
+			{
+				$old_size = $sandwich->id_size;
+				$sandwich->id_size = $body["taille"];
+			}
+
+			if ($sandwich->id_type != $body["type"])
+			{
+				$sandwich->id_type = $body["type"];
+			}
+
+			$taille = size::where("id", "=", $body["taille"])->firstOrFail();
+
+			if ($taille->nb_ingredients == count($body["ingredient"]))
+			{
+				if($count <= $taille->nb_special)
+				{
+					foreach ($body["ingredient"] as $key => $value) 
+					{	
+						if ($key != $value)
+						{	
+							$sandwich->ingredients()
+							    	->newPivotStatement()
+							    	->where('id_sandwich', $args["id_sandwich"])
+							    	->where('id_ingredient', $key)
+							    	->update(array('id_ingredient' => $value));
+						}
+					}
+
+					$sandwich->save();
+					$commande->save();
+
+				} else {
+					return  json_error($rs, 500, "Erreur nombre ingredients");
+				}
+			} else {
+
+			}
+				
+		} else if ($commande->etat == "paid") {
+			foreach ($body["ingredient"] as $key => $value) 
+			{	
+				if ($key != $value)
+				{	
+					$ingredient = ingredient::where("id", "=", $key)->firstOrFail();
+
+					if ($ingredient->cat_id == 5) {
+						$sandwich->ingredients()
+					    	->newPivotStatement()
+					    	->where('id_sandwich', $args["id_sandwich"])
+					    	->where('id_ingredient', $key)
+					    	->update(array('id_ingredient' => $value));
+					}
+				}
+			}
+
+			$sandwich->save();
+			$commande->save();
+		}
+	}
+
+	//fonction pour modifier la date de livraison d'une commande
+	public function updateCommande($req, $rs,$args)
+	{
+		try {
+			$body = $req->getParsedBody();
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+			if($commande->etat != "livrée") {
+				$commande->date_retrait = $body["date_retrait"];
+				var_dump($commande);
+				$commande->save();
+			}
+
+		}catch(\Exception $e){
+			return json_error($rs, 404, $e->getMessage());
+		}
+	}
+
+	//fonction pour modifier la date de livraison d'une commande
+	public function getCommandeDescritpion($req, $rs,$args)
+	{
+		try {
+			$body = $req->getParsedBody();
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+			$sandwichs = $commande->sandwichs;
+
+			foreach ($sandwichs as $sandwich) {
+				$array["Sandwich ".$sandwich->id] = "Prix : ".$sandwich->size->prix;
+			}
+
+			return json_success($rs,200, json_encode($array));
+
+		}catch(\Exception $e){
+			return json_error($rs, 404, $e->getMessage());
+		}
+	}
 }
