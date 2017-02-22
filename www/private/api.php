@@ -59,7 +59,7 @@ use Illuminate\Database\Capsule\Manager as DB;
 
                 elseif (isset($req->getQueryParams()['etat']) || isset($req->getQueryParams()['date_livraison'])) {
                     return (new lbs\api\PrivateController($this))->getFiltredCommandes($req,$resp,$args);
-                    
+
                 }elseif (isset($req->getQueryParams()['offset']) && isset($req->getQueryParams()['limit'])){
                     return (new lbs\api\PrivateController($this))->getPaginatedCommandes($req,$resp,$args);
                 }
@@ -72,6 +72,12 @@ use Illuminate\Database\Capsule\Manager as DB;
             }
         )->setName('commande');
 
+        //changement de l'etat d'une commande
+        $app->get('/commande/{id}/changerEtatCom',
+            function (Request $req, Response $resp, $args) {
+                    return (new lbs\api\PrivateController($this))->changerEtatCom($req,$resp,$args);
+            }
+        )->setName('changerEtatCom');
 
 
     $app->run();
