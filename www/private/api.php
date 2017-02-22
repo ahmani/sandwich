@@ -77,4 +77,10 @@ use Illuminate\Database\Capsule\Manager as DB;
         )->setName('changeCommandStatus');
 
 
+    $app->put('/commandes/{id}',
+        function (Request $req, Response $resp, $args) {
+                return (new lbs\api\PrivateController($this))->changeCommandStatus($req,$resp,$args);
+        }
+    )->setName('changeCommandStatus');
+
     $app->run();

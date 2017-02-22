@@ -74,7 +74,7 @@ Class PrivateController
 
 
 //changement de l'etat d'une commande
-public function changeCommandStatus($req, $resp, $args)
+	public function changeCommandStatus($req, $resp, $args)
 	{
 		$commande = Commande::select()->where('id', '=', $args['id'])->firstOrFail();
 		$newEtat = filter_var($req->getParsedBody()['etat'], FILTER_SANITIZE_STRING);
@@ -99,7 +99,6 @@ public function changeCommandStatus($req, $resp, $args)
 			  default:
 			    return json_error($resp, 500, "Transition incorrecte");
 			}
-
 			$commande->save();
 			return json_success($resp,200, 'Etat de la commande mis à jour');
 		}
