@@ -72,4 +72,39 @@ Class PrivateController
 		return $resp;
 	}
 
+
+//changement de l'etat d'une commande
+public function changeCommandStatus($req, $resp, $args)
+	{
+		$commande = Commande::select()->where('id', '=', $args['id'])->firstOrFail();
+		$newEtat = filter_var($req->getParsedBody()['etat'], FILTER_SANITIZE_STRING);
+
+		if (!empty($commande))
+		{
+			$old_status = $commande->etat;
+
+			switch ($newEtat) {
+			  case "progress":
+			    if ($old_status == "paid")
+		      	$commande->etat = $newEtat;
+	      break;
+			  case "ready":
+			    if ($old_status == "progess")
+			      $commande->etat = $newEtat;
+			  break;
+			  case "delivered":
+			    if ($old_status == "ready")
+			    	$commande->etat = $newEtat;
+			  break;
+			  default:
+			    return json_error($resp, 500, "Transition incorrecte");
+			}
+
+			$commande->save();
+			return json_success($resp,200, 'Etat de la commande mis à jour');
+		}
+
+		return json_error($resp, 404, "Not found");
+	}
+
 }

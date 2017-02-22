@@ -43,8 +43,9 @@ use Illuminate\Database\Capsule\Manager as DB;
                 ->write( 'méthode permises :' .implode(',', $methods) );
         };
 
+      };
 
-		/* categorie/id */
+
         $app = new \Slim\App(new \Slim\Container($c));
         $app->add('addheaders');
 
@@ -69,10 +70,11 @@ use Illuminate\Database\Capsule\Manager as DB;
         )->setName('commande');
 
         //changement de l'etat d'une commande
-        $app->get('/commande/{id}/changerEtatCom',
-            function (Request $req, Response $resp, $args) {
-                    return (new lbs\api\PrivateController($this))->changerEtatCom($req,$resp,$args);
-            }
-        )->setName('changerEtatCom');
+        $app->put('/commandes/{id}',
+        function (Request $req, Response $resp, $args) {
+                return (new lbs\api\PrivateController($this))->changeCommandStatus($req,$resp,$args);
+        }
+        )->setName('changeCommandStatus');
+
 
     $app->run();
