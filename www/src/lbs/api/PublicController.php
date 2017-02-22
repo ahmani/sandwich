@@ -423,4 +423,42 @@ Class PublicController
 			$commande->save();
 		}
 	}
+
+	//fonction pour modifier la date de livraison d'une commande
+	public function updateCommande($req, $rs,$args)
+	{
+		try {
+			$body = $req->getParsedBody();
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+			if($commande->etat != "livrée") {
+				$commande->date_retrait = $body["date_retrait"];
+				var_dump($commande);
+				$commande->save();
+			}
+
+		}catch(\Exception $e){
+			return json_error($rs, 404, $e->getMessage());
+		}
+	}
+
+	//fonction pour modifier la date de livraison d'une commande
+	public function getCommandeDescritpion($req, $rs,$args)
+	{
+		try {
+			$body = $req->getParsedBody();
+			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
+
+			$sandwichs = $commande->sandwichs;
+
+			foreach ($sandwichs as $sandwich) {
+				$array["Sandwich ".$sandwich->id] = "Prix : ".$sandwich->size->prix;
+			}
+
+			return json_success($rs,200, json_encode($array));
+
+		}catch(\Exception $e){
+			return json_error($rs, 404, $e->getMessage());
+		}
+	}
 }
