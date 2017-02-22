@@ -15,7 +15,7 @@ function checkToken ( Request $rq, Response $rs, callable $next ) {
 				Commande::where('id', '=', $id)
 				->where('token', '=',$token)
 				->firstOrFail();
-		} 
+		}
 		catch (ModelNotFoundException $e) {
 			return json_error($rs,403,"no token or invalid token");
 

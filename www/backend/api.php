@@ -45,7 +45,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         };
     };
 
-	
+
     $app = new \Slim\App(new \Slim\Container($c));
     $app->add('addheaders');
 
@@ -83,5 +83,22 @@ use Illuminate\Database\Capsule\Manager as DB;
     );*/
 
     $app->get('/categories', 'gestionContoller:test');
+
+    //supprimer un ingrédient dans la liste
+    $app->delete('/gestion/ingredient/{id}/suppIngredient',
+        function (Request $request, Response $response, $args) {
+                return (new lbs\api\gestionController($this))->suppIngredient($request,$response,$args);
+        }
+    )->setName('suppIngredient');
+
+    //$app->delete('/gestion/ingredient/{id}', 'gestionContoller:suppIngredient')->setName('suppIngredient');
+
+    //ajouter un ingrédient
+    $app->post('/gestion/ingredients',
+        function (Request $req, Response $resp, $args) {
+                return (new lbs\api\gestionController($this))->ajouterIngredient($req,$resp,$args);
+        }
+    )->setName('ajoutIngredient');
+
 
     $app->run();

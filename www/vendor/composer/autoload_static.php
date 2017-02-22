@@ -9,8 +9,8 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
-        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'f25e06e7a2bc479393612710e88ed589' => __DIR__ . '/../..' . '/src/middlewares/mapi.php',
         '1aa1e6cea06212c3bc92731cb7805b2c' => __DIR__ . '/../..' . '/src/lbs/utils/gestion_erreurs.php',
     );
@@ -21,11 +21,13 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Translation\\' => 30,
             'Stringy\\' => 8,
+            'Slim\\Views\\' => 11,
             'Slim\\' => 5,
         ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
         ),
         'I' => 
         array (
@@ -58,6 +60,10 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
         array (
             0 => __DIR__ . '/..' . '/danielstjules/stringy/src',
         ),
+        'Slim\\Views\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/twig-view/src',
+        ),
         'Slim\\' => 
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
@@ -65,6 +71,10 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
         ),
         'Interop\\Container\\' => 
         array (
@@ -102,6 +112,13 @@ class ComposerStaticInit564e70454cbd912b00c4b3df745163b6
             'lbs\\' => 
             array (
                 0 => __DIR__ . '/../..' . '/src',
+            ),
+        ),
+        'T' => 
+        array (
+            'Twig_' => 
+            array (
+                0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
         'S' => 
