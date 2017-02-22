@@ -4,7 +4,6 @@ require_once "../vendor/autoload.php";
 require_once "../src/conf/autoload.php";
 require_once "../src/lbs/utils/CommonsFunctions.php";
 
-//define("COMMANDE_CREATED", "created");
 
 use \lbs\common\model\Categorie as Categorie;
 use \lbs\common\model\Commande;
@@ -25,6 +24,8 @@ use Illuminate\Database\Capsule\Manager as DB;
             'displayErrorDetails' => true,
         ],
     ];
+
+
     $c['notFoundHandler'] = function ($c) {
         return function ($request, $response) use ($c) {
             return $c['response']
@@ -44,34 +45,43 @@ use Illuminate\Database\Capsule\Manager as DB;
         };
     };
 
-	/* categorie/id */
+	
     $app = new \Slim\App(new \Slim\Container($c));
     $app->add('addheaders');
 
-    $app->get('/commandes',
-        function (Request $req, Response $resp, $args) {
-            if(empty($req->getQueryParams()))
-         		return (new lbs\api\PrivateController($this))->getcommandes($req,$resp,$args);
 
-            elseif (isset($req->getQueryParams()['etat']) || isset($req->getQueryParams()['date_livraison'])) {
-                return (new lbs\api\PrivateController($this))->getFiltredCommandes($req,$resp,$args);
-                
-            }elseif (isset($req->getQueryParams()['offset']) && isset($req->getQueryParams()['limit'])){
-                return (new lbs\api\PrivateController($this))->getPaginatedCommandes($req,$resp,$args);
-            }
-        }
-    )->setName('commandes');
+    $container = $app->getContainer();
 
-    $app->get('/commande/{id}',
-        function (Request $req, Response $resp, $args) {
-                return (new lbs\api\PrivateController($this))->getCommandeDetail($req,$resp,$args);
-        }
-    )->setName('commande');
+    $container["view"] = function($container) {
 
-    $app->put('/commandes/{id}',
-        function (Request $req, Response $resp, $args) {
-                return (new lbs\api\PrivateController($this))->changeCommandStatus($req,$resp,$args);
+        $view = new \Slim\Views\Twig(__DIR__ . '/views', [
+            'chache' => false,
+        ]);
+
+
+        $view->addExtension(new \Slim\Views\TwigExtension(
+
+            $container->router,
+
+            $container->request->getUri()
+        ));
+
+        return $view;
+    };
+
+    $container["gestionContoller"] = function($container) {
+
+        return new \lbs\api\gestionController($container);
+
+    };
+
+
+    /*$app->get('/categories',
+        function (Request $req, Response $resp) {
+            return $this->view->render($resp, 'layout.html.twig');
         }
-    )->setName('changeCommandStatus');
+    );*/
+
+    $app->get('/categories', 'gestionContoller:test');
 
     $app->run();

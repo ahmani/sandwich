@@ -4,21 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "22ff68d356ecd5a2dcb0342d0ccd507c",
+    "content-hash": "819465b3b29825f21035b18659f5b779",
     "packages": [
         {
             "name": "container-interop/container-interop",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/container-interop/container-interop.git",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e"
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/fc08354828f8fd3245f77a66b9e23a6bca48297e",
-                "reference": "fc08354828f8fd3245f77a66b9e23a6bca48297e",
+                "url": "https://api.github.com/repos/container-interop/container-interop/zipball/79cbf1341c22ec75643d841642dd5d6acd83bdb8",
+                "reference": "79cbf1341c22ec75643d841642dd5d6acd83bdb8",
                 "shasum": ""
+            },
+            "require": {
+                "psr/container": "^1.0"
             },
             "type": "library",
             "autoload": {
@@ -31,7 +34,8 @@
                 "MIT"
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
-            "time": "2014-12-30T15:22:37+00:00"
+            "homepage": "https://github.com/container-interop/container-interop",
+            "time": "2017-02-14T19:40:03+00:00"
         },
         {
             "name": "danielstjules/stringy",
@@ -455,26 +459,32 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "1.21.0",
+            "version": "1.22.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "7b08ec6f75791e130012f206e3f7b0e76e18e3d7"
+                "reference": "7cdf42c0b1cc763ab7e4c33c47a24e27c66bfccc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7b08ec6f75791e130012f206e3f7b0e76e18e3d7",
-                "reference": "7b08ec6f75791e130012f206e3f7b0e76e18e3d7",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7cdf42c0b1cc763ab7e4c33c47a24e27c66bfccc",
+                "reference": "7cdf42c0b1cc763ab7e4c33c47a24e27c66bfccc",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0",
-                "symfony/translation": "~2.6|~3.0"
+                "symfony/translation": "~2.6 || ~3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0|~5.0"
+                "friendsofphp/php-cs-fixer": "~2",
+                "phpunit/phpunit": "~4.0 || ~5.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.23-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Carbon\\": "src/Carbon/"
@@ -498,20 +508,20 @@
                 "datetime",
                 "time"
             ],
-            "time": "2015-11-04T20:07:17+00:00"
+            "time": "2017-01-16T07:55:07+00:00"
         },
         {
             "name": "nikic/fast-route",
-            "version": "v1.0.1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/FastRoute.git",
-                "reference": "8ea928195fa9b907f0d6e48312d323c1a13cc2af"
+                "reference": "b5f95749071c82a8e0f58586987627054400cdf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/8ea928195fa9b907f0d6e48312d323c1a13cc2af",
-                "reference": "8ea928195fa9b907f0d6e48312d323c1a13cc2af",
+                "url": "https://api.github.com/repos/nikic/FastRoute/zipball/b5f95749071c82a8e0f58586987627054400cdf6",
+                "reference": "b5f95749071c82a8e0f58586987627054400cdf6",
                 "shasum": ""
             },
             "require": {
@@ -541,7 +551,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2016-06-12T19:08:51+00:00"
+            "time": "2017-01-19T11:35:12+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -588,6 +598,55 @@
                 "dependency injection"
             ],
             "time": "2015-09-11T15:10:35+00:00"
+        },
+        {
+            "name": "psr/container",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "time": "2017-02-14T16:28:37+00:00"
         },
         {
             "name": "psr/http-message",
@@ -641,16 +700,16 @@
         },
         {
             "name": "slim/slim",
-            "version": "3.6.0",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slimphp/Slim.git",
-                "reference": "a685fe91a9435e1432e8eeb7cf516e2f5cee7f64"
+                "reference": "4254e40d81559e35cdf856bcbaca5f3af468b7ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/a685fe91a9435e1432e8eeb7cf516e2f5cee7f64",
-                "reference": "a685fe91a9435e1432e8eeb7cf516e2f5cee7f64",
+                "url": "https://api.github.com/repos/slimphp/Slim/zipball/4254e40d81559e35cdf856bcbaca5f3af468b7ef",
+                "reference": "4254e40d81559e35cdf856bcbaca5f3af468b7ef",
                 "shasum": ""
             },
             "require": {
@@ -700,14 +759,64 @@
                 }
             ],
             "description": "Slim is a PHP micro framework that helps you quickly write simple yet powerful web applications and APIs",
-            "homepage": "http://slimframework.com",
+            "homepage": "https://slimframework.com",
             "keywords": [
                 "api",
                 "framework",
                 "micro",
                 "router"
             ],
-            "time": "2016-11-20T20:48:49+00:00"
+            "time": "2016-12-20T20:30:47+00:00"
+        },
+        {
+            "name": "slim/twig-view",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/slimphp/Twig-View.git",
+                "reference": "a743ac45e2a089942159dda499c5ef5bc5f6bfa6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/slimphp/Twig-View/zipball/a743ac45e2a089942159dda499c5ef5bc5f6bfa6",
+                "reference": "a743ac45e2a089942159dda499c5ef5bc5f6bfa6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "psr/http-message": "^1.0",
+                "twig/twig": "^1.18|^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8|^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Slim\\Views\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Lockhart",
+                    "email": "hello@joshlockhart.com",
+                    "homepage": "http://joshlockhart.com"
+                }
+            ],
+            "description": "Slim Framework 3 view helper built on top of the Twig 2 templating component",
+            "homepage": "http://slimframework.com",
+            "keywords": [
+                "framework",
+                "slim",
+                "template",
+                "twig",
+                "view"
+            ],
+            "time": "2017-01-25T20:38:39+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -770,16 +879,16 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v3.2.0",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation.git",
-                "reference": "64ab6fc0b42e5386631f408e6adcaaff8eee5ba1"
+                "reference": "d6825c6bb2f1da13f564678f9f236fe8242c0029"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation/zipball/64ab6fc0b42e5386631f408e6adcaaff8eee5ba1",
-                "reference": "64ab6fc0b42e5386631f408e6adcaaff8eee5ba1",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/d6825c6bb2f1da13f564678f9f236fe8242c0029",
+                "reference": "d6825c6bb2f1da13f564678f9f236fe8242c0029",
                 "shasum": ""
             },
             "require": {
@@ -830,7 +939,68 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-18T21:17:59+00:00"
+            "time": "2017-02-16T22:46:52+00:00"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v1.31.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "ddc9e3e20ee9c0b6908f401ac8353635b750eca7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ddc9e3e20ee9c0b6908f401ac8353635b750eca7",
+                "reference": "ddc9e3e20ee9c0b6908f401ac8353635b750eca7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.7"
+            },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.31-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "http://twig.sensiolabs.org/contributors",
+                    "role": "Contributors"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "http://twig.sensiolabs.org",
+            "keywords": [
+                "templating"
+            ],
+            "time": "2017-01-11T19:36:15+00:00"
         }
     ],
     "packages-dev": [],

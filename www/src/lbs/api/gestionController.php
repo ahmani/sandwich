@@ -8,11 +8,15 @@ use lbs\common\model\Commande;
 use lbs\common\model\Size;
 use lbs\common\model\Type;
 use lbs\common\model\Sandwich;
+use \Slim\Views\Twig as View;
 
-Class gestionController{
+Class gestionController extends baseController 
+{
 
-	private $cont;
+	public function test( $request, $response) {
 
-	public function __construct($var){
-		$this->cont= $var;
+		return $this->view->render($response, 'layout.html.twig');
+
 	}
+
+}
