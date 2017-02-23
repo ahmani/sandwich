@@ -83,4 +83,27 @@ Class gestionController extends baseController
 	}
 
 
+	//obtenir un TDB
+	public function obtenirTDB(Request $request, Response $response, $args){
+		try{
+			$commande = Commande::select()->get();
+			$nb_commandes = 0;
+			$chiffre_affaire = 0;
+			foreach ($commande as $value){
+				$nb_commandes++;
+				foreach($commande->date as $same_date){
+					$chiffre_affaire += $commande->montant;
+				}
+			}
+			//$tdb = array('Nombre de commandes : '.$nb_commandes,'Chiffre d\'affaire : '.$chiffre_affaire);
+			$tdb = array("Nombre de commandes"=>$nb_commandes , "Chiffre d\'affaire"=>$chiffre_affaire);
+			$response = $response->withJson($tdb->toJson(), 201);
+		}catch(ModelNotFoundException $e){
+			$response = $response->withStatus(404)->withHeader('Content-type', 'application/json');
+			$errorMessage = ["error" => "erreur de prise en compte" ];
+			$response->getBody()->write(json_encode($errorMessage));
+		}
+		return $response;
+	}
+
 }

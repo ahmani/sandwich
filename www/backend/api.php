@@ -95,12 +95,19 @@ use Illuminate\Database\Capsule\Manager as DB;
         }
     )->setName('ajoutIngredient');
 
-
+    //modifier une taille de sandwich
     $app->put('/gestion/size/{id}/modifTaille',
         function (Request $req, Response $resp, $args) {
                 return (new lbs\api\gestionController($this))->modifierTaille($req,$resp,$args);
         }
     )->setName('modifTaille');
+
+    //obtenir un TDB
+    $app->get('/gestion/tdb',
+        function (Request $req, Response $resp, $args) {
+                return (new lbs\api\gestionController($this))->obtenirTDB($req,$resp,$args);
+        }
+    )->setName('tableauDeBord');
 
 
     $app->run();
