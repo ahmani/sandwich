@@ -66,43 +66,68 @@ Class gestionController extends baseController
 
 
 	//modifier une taille de sandwich
-	public function modifierTaille(Request $request, Response $response, $args){
-		try{
+	public function modifierTaille($request, $response, $args)
+	{
+		try
+		{
+			if (!isset($args["id"]))
+				return $response->withJson(array('Erreur' => "Missing param"), 500);
+
+			$data = $request->getParsedBody();
+
 			$size = Size::select()->where('id','=',$args['id'])->firstOrFail();
-			$size->nom = filter_var($request->getParsedBody()['nom'], FILTER_SANITIZE_STRING);
-			$size->description = filter_var($request->getParsedBody()['description'], FILTER_SANITIZE_STRING);
-			$size->prix = filter_var($request->getParsedBody()['prix'], FILTER_SANITIZE_FLOAT);
+
+			if (!empty($data["nom"]))
+				$size->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
+
+			if (!empty($data["description"]))
+				$size->description = filter_var($data['description'], FILTER_SANITIZE_STRING);
+
+			if (!empty($data["prix"]))
+				$size->prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
+
 			$size->save();
-			$response = $this->json_success($response, 201, $size->toJson());
-		}catch(ModelNotFoundException $e){
-				$response = $response->withStatus(404)->withHeader('Content-type', 'application/json');
-				$errorMessage = ["error" => "id not found" ];
-				$response->getBody()->write(json_encode($errorMessage));
+			$response = $response->withJson(json_encode($size), 201);
+
+		} catch(ModelNotFoundException $e)
+		{
+			$response = $response->withJson(array("error" => "Not found"), 404);
 		}
-			return $response;
+
+		return $response;
 	}
 
 
 	//obtenir un TDB
-	public function obtenirTDB(Request $request, Response $response, $args){
-		try{
-			$commande = Commande::select()->get();
+	public function obtenirTDB($request, $response, $args)
+	{
+		try 
+		{
+			$commandes = Commande::select()->get();
+
 			$nb_commandes = 0;
 			$chiffre_affaire = 0;
-			foreach ($commande as $value){
+
+			foreach ($commandes as $commande)
+			{
 				$nb_commandes++;
-				foreach($commande->date as $same_date){
+				$today = date("Y-m-d");
+				$date = date_create($commande->date)->format('Y-m-d');
+
+				if ($today == $date)
+				{
 					$chiffre_affaire += $commande->montant;
 				}
 			}
-			//$tdb = array('Nombre de commandes : '.$nb_commandes,'Chiffre d\'affaire : '.$chiffre_affaire);
-			$tdb = array("Nombre de commandes"=>$nb_commandes , "Chiffre d\'affaire"=>$chiffre_affaire);
-			$response = $response->withJson($tdb->toJson(), 201);
-		}catch(ModelNotFoundException $e){
-			$response = $response->withStatus(404)->withHeader('Content-type', 'application/json');
-			$errorMessage = ["error" => "erreur de prise en compte" ];
-			$response->getBody()->write(json_encode($errorMessage));
+
+			$tdb = array("Nombre de commandes : " => $nb_commandes , "Chiffre d'affaire" => $chiffre_affaire);
+			$response = $response->withJson(json_encode($tdb), 201);
+
+		} catch(ModelNotFoundException $e)
+		{
+			$response = $response->withJson(array("error" => "erreur de prise en compte"), 404);
 		}
+
 		return $response;
 	}
 
