@@ -42,16 +42,34 @@ Class gestionController extends baseController
 				 $ingredient->cat_id = filter_var($request->getParsedBody()['cat_id'], FILTER_SANITIZE_INT);
 				 $ingredient->description = filter_var($request->getParsedBody()['description'], FILTER_SANITIZE_STRING);
 				 $ingredient->fournisseur = filter_var($request->getParsedBody()['fournisseur'], FILTER_SANITIZE_STRING);
-				 $ingredient->img = filter_var($request->getParsedBody()['img'], FILTER_UNSAFE_RAW);
+				 $ingredient->img = filter_var($request->getParsedBody()['img'], FILTER_SANITIZE_STRING);
 				 $ingredient->save();
 
-				 $newIngredient=array($ingredient, $ingredient->getingredientcat());
-
+				 $newIngredient = array($ingredient, $ingredient->getingredientcat());
 				 $response = $this->json_success($response, 201, $newIngredient->toJson());
 		}else{
 			 $response = $this->json_error($response, 500, "erreur lors de la creation de la ressource");
 		}
 		return $response;
 	}
+
+
+	//modifier une taille de sandwich
+	public function modifierTaille(Request $request, Response $response, $args){
+		try{
+			$size = Size::select()->where('id','=',$args['id'])->firstOrFail();
+			$size->nom = filter_var($request->getParsedBody()['nom'], FILTER_SANITIZE_STRING);
+			$size->description = filter_var($request->getParsedBody()['description'], FILTER_SANITIZE_STRING);
+			$size->prix = filter_var($request->getParsedBody()['prix'], FILTER_SANITIZE_FLOAT);
+			$size->save();
+			$response = $this->json_success($response, 201, $size->toJson());
+		}catch(ModelNotFoundException $e){
+				$response = $response->withStatus(404)->withHeader('Content-type', 'application/json');
+				$errorMessage = ["error" => "id not found" ];
+				$response->getBody()->write(json_encode($errorMessage));
+		}
+			return $response;
+	}
+
 
 }

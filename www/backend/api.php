@@ -82,6 +82,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         }
     );*/
 
+
     $app->get('/categories', 'gestionContoller:test');
 
     //supprimer un ingrédient dans la liste
@@ -99,6 +100,13 @@ use Illuminate\Database\Capsule\Manager as DB;
                 return (new lbs\api\gestionController($this))->ajouterIngredient($req,$resp,$args);
         }
     )->setName('ajoutIngredient');
+
+
+    $app->put('/gestion/size/{id}/modifTaille',
+        function (Request $req, Response $resp, $args) {
+                return (new lbs\api\gestionController($this))->modifierTaille($req,$resp,$args);
+        }
+    )->setName('modifTaille');
 
 
     $app->run();
