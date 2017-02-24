@@ -1,0 +1,14 @@
+﻿Dépôt git: https://github.com/ahmani/sandwich
+
+Ouvrez un terminal, puis suivez les commandes et instructions suivantes :
+
+Sur le bureau de votre ordinateur (ou à un autre emplacement), faite un ‘git clone’ pour cloner le dépôt du projet
+
+Dans le dossier sandwich où se trouve le fichier Vagrantfile, faites un ‘vagrant up’ 
+
+Ensuite, dans le dossier sandwich/www, faites un 'composer install'
+
+Le script SQL de la base de données,nommée lbs.sql, se trouve dans le dossier sandwich
+Il vous faut l'importer via l'URL http://lbs.local/adminer.php {login : root; mdp : root}
+
+La documentation de l'API (documentation_api.pdf) est aussi dans le dossier sandwich
