@@ -1,0 +1,55 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="../style/signin.css">
+{% endblock %}
+
+{% block title %}Register{% endblock %}
+
+{% block user_content %}
+
+  <div class="container">
+
+    <form class="form-signin" action="{{ path_for('user.Register') }}" method="POST">
+      <h2 class="form-signin-heading">Inscription</h2>
+
+      <div class="form-group">
+        <label for="inputNom" class="sr-only">Nom</label>
+        <input type="text" id="inputNom" name="inputNom" class="form-control" placeholder="Nom" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPrenom" class="sr-only">Prenom</label>
+        <input type="text" id="inputPrenom" name="inputPrenom" class="form-control" placeholder="Prenom" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" id="inputUsername" name="inputUsername" class="form-control" placeholder="Username" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <a href="{{ path_for('user.Login') }}" class="btn btn-lg btn-success btn-block" href="">Sign in</a>
+      </div>
+
+      {% if message is defined %}
+        <div class="form-group">
+          <div class="alert alert-danger">
+            <strong>{{ message }}</strong>
+          </div>
+        </div>
+      {% endif %}
+      
+    </form>
+
+    
+
+  </div>
+
+{% endblock user_content %}

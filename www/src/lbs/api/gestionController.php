@@ -2,22 +2,65 @@
 
 namespace lbs\api;
 
+use lbs\common\model\User;
+use lbs\common\model\Size;
+use lbs\common\model\Commande;
 use lbs\common\model\Categorie;
 use lbs\common\model\Ingredient;
-use lbs\common\model\Commande;
-use lbs\common\model\Size;
-use lbs\common\model\Type;
-use lbs\common\model\Sandwich;
+
 use \Slim\Views\Twig as View;
 
-Class gestionController extends baseController
+Class gestionController extends baseController 
 {
 
-	public function test( $request, $response) {
-
-		return $this->view->render($response, 'layout.html.twig');
-
+	public function test($request, $response) 
+	{
+		return $this->view->render($response, 'login.html.twig');
 	}
+
+    public function getRegister($request, $response) 
+	{
+		if (!isset($_SESSION)) { session_start(); }
+		if (!empty($_SESSION["message"]))
+			return $this->view->render($response, 'register.html.twig', array("message" => $_SESSION["message"]));
+
+		return $this->view->render($response, 'register.html.twig');
+	}
+
+	public function postRegister($request, $response)
+	{
+		$data = $request->getParams();
+		if (!isset($_SESSION)) { session_start(); }
+
+		$user = User::where("username", "=", $data["inputUsername"])->first();
+		if (!empty($user)) {
+
+			$_SESSION["message"] = "Username indisponible";
+			return $response->withRedirect($this->router->pathFor('user.Register'));
+
+		}
+
+        $user = new User();
+        $user->last_name = filter_var($data['inputPrenom'], FILTER_SANITIZE_STRING);
+        $user->first_name = filter_var($data['inputNom'], FILTER_SANITIZE_STRING);
+        $user->username = filter_var($data['inputUsername'], FILTER_SANITIZE_STRING);
+        $pass = filter_var($data['password'], FILTER_SANITIZE_STRING);
+        $user->password = password_hash($pass, PASSWORD_DEFAULT);
+
+        if($user->save())
+        {
+
+        	unset($_SESSION["message"]);
+        	return $response->withRedirect($this->router->pathFor('user.Login'));
+
+        } else {
+
+        	$_SESSION["message"] = "Erreur lors de votre inscription";
+            return $response->withRedirect($this->router->pathFor('user.Register'));
+
+        }
+
+    }
 
 	//supprimer un ingrédient dans la liste
 	public function suppIngredient($request, $response, $args){
@@ -27,7 +70,7 @@ Class gestionController extends baseController
 			if (!empty($ingredient)) {
 				$ingredient->delete();
 				$response = $response->withJson(array('Succes' => "deleted"), 201);
-			}
+			} 
 
 			$response = $response->withJson(array('Erreur' => "Not found"), 404);
 
@@ -56,14 +99,16 @@ Class gestionController extends baseController
 			$ingredient->save();
 
 			$newIngredient = array($ingredient, $ingredient->categorie);
+			var_dump($newIngredient);die;
+
 			$response = $response->withJson($newIngredient->toJson(), 201);
 
 		} else {
 			$response = $response->withJson(array('Erreur' => "erreur lors de la creation de la ressource"), 500);
 		}
+
 		return $response;
 	}
-
 
 	//modifier une taille de sandwich
 	public function modifierTaille($request, $response, $args)
@@ -131,4 +176,16 @@ Class gestionController extends baseController
 		return $response;
 	}
 
+	public function getIngredients($request, $response) 
+	{
+		$categories = Categorie::select()->get();
+		$cat_id = (!isset($_GET["categorie"]) ? 1 : $_GET["categorie"]);
+		$ingredients = Ingredient::where("cat_id", "=", $cat_id)->get();
+		$data["categories"] = $categories;
+		$data["ingredients"] = $ingredients;
+		$data["id"] = array("value" => $cat_id);
+
+		return $this->view->render($response, 'ingredients.html.twig' , $data);
+
+	}
 }

@@ -3,6 +3,7 @@
 require_once "../vendor/autoload.php";
 require_once "../src/conf/autoload.php";
 require_once "../src/lbs/utils/CommonsFunctions.php";
+require_once "../src/lbs/utils/gestion_erreurs.php";
 
 
 use \lbs\common\model\Categorie as Categorie;
@@ -45,7 +46,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         };
     };
 
-
+	
     $app = new \Slim\App(new \Slim\Container($c));
     $app->add('addheaders');
 
@@ -76,14 +77,17 @@ use Illuminate\Database\Capsule\Manager as DB;
     };
 
 
-    /*$app->get('/categories',
-        function (Request $req, Response $resp) {
-            return $this->view->render($resp, 'layout.html.twig');
-        }
-    );*/
+    // Routes
 
+    // Authentification
+    $app->get('/login', 'gestionContoller:test')->setName('user.Login');
 
-    $app->get('/categories', 'gestionContoller:test');
+    $app->post('/login', 'gestionContoller:register');
+
+    // Inscription
+    $app->get('/register', 'gestionContoller:getRegister')->setName('user.Register');
+
+    $app->post('/register', 'gestionContoller:postRegister');
 
     //supprimer un ingrédient dans la liste
     $app->delete('/ingredients/{id}', 'gestionContoller:suppIngredient')->setName('suppIngredient');
@@ -100,7 +104,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         function (Request $req, Response $resp, $args) {
                 return (new lbs\api\gestionController($this))->modifierTaille($req,$resp,$args);
         }
-    )->setName('updateTaille');
+    )->setName('modifTaille');
 
     //obtenir un TDB
     $app->get('/gestion/tdb',
@@ -109,5 +113,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         }
     )->setName('tableauDeBord');
 
+    // Ingrédients par catégorie
+    $app->get('/ingredients', 'gestionContoller:getIngredients')->setName('user.loadIngredients');
 
     $app->run();

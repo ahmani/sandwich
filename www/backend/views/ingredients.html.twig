@@ -1,0 +1,59 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+  
+{% endblock %}
+
+{% block title %}Ingredients{% endblock %}
+
+{% block user_content %}
+
+  <div class="container">
+
+    <form action="{{ path_for('user.loadIngredients') }}" method="GET">
+              
+        <legend>Categorie :</legend>
+        <div class="form-group">
+          <select name="categorie" class="form-control" id="categorie">
+            {% for categorie in categories %}
+              {% if id.value == categorie.id %}
+                <option value="{{ categorie.id }}" selected="selected">{{ categorie.nom }}</option>
+              {% else %}
+                <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-lg btn-primary col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-8" type="submit">Charger ingrédients</button>
+        </div>
+
+        <legend>Ingredients :</legend>
+        <table class="table table-hover table-responsive">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Déscription</th>
+              <th>Fournisseur</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for ingredient in ingredients %}
+              <tr>
+                <td>{{ ingredient.nom }}</td>
+                <td>{{ ingredient.description }}</td>
+                <td>{{ ingredient.fournisseur }}</td>
+              
+                
+              
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+    </form>
+
+  </div>
+
+{% endblock user_content %}

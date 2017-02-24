@@ -1,0 +1,34 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="../style/signin.css">
+{% endblock %}
+
+{% block title %}Login{% endblock %}
+
+{% block user_content %}
+
+  <div class="container">
+
+    <form class="form-signin" action="{{ path_for('user.Login') }}" method="POST">
+      <h2 class="form-signin-heading">Authentification</h2>
+
+      <div class="form-group">
+        <label for="inputLogin" class="sr-only">Login</label>
+        <input type="text" id="inputLogin" name="inputLogin" class="form-control" placeholder="Login" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <a href="{{ path_for('user.Register') }}" class="btn btn-lg btn-success btn-block" href="">Sign up</a>
+      </div>
+    </form>
+
+  </div>
+
+{% endblock user_content %}
