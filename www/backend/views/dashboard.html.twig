@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="../style/simple-sidebar.css">
+  <link rel="stylesheet" href="../style/dashboard.css">
+{% endblock %}
+
+{% block title %}Ingredients{% endblock %}
+
+{% block user_content %}
+
+  <div class="container dashboard">
+
+      <legend class="legend">Résultats du jour ({{ Date }})</legend>
+      <p>Nombre total de commandes passées : <strong>{{ Nombre_commandes }}</strong></p>
+      <p>Chiffre d'affaire du jour : <strong>{{ Chiffre_affaire }}</strong></p>
+      
+  </div>
+
+{% endblock user_content %}

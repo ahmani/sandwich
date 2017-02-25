@@ -231,11 +231,12 @@ Class gestionController extends baseController
 	}
 
 	//obtenir un TDB
-	public function obtenirTDB($request, $response, $args)
+	public function getDashboard($request, $response, $args)
 	{
 		try 
 		{
-			$commandes = Commande::select()->get();
+			$today = date("Y-m-d");
+			$commandes = Commande::whereDate("date", "=", $today)->get();
 
 			$nb_commandes = 0;
 			$chiffre_affaire = 0;
@@ -243,7 +244,6 @@ Class gestionController extends baseController
 			foreach ($commandes as $commande)
 			{
 				$nb_commandes++;
-				$today = date("Y-m-d");
 				$date = date_create($commande->date)->format('Y-m-d');
 
 				if ($today == $date)
@@ -252,8 +252,13 @@ Class gestionController extends baseController
 				}
 			}
 
-			$tdb = array("Nombre de commandes : " => $nb_commandes , "Chiffre d'affaire" => $chiffre_affaire);
-			$response = $response->withJson(json_encode($tdb), 201);
+			$data["Date"] = $today;
+			$data["Nombre_commandes"] = $nb_commandes;
+			$data["Chiffre_affaire"] = $chiffre_affaire;
+
+			return $this->view->render($response, 'dashboard.html.twig' , $data);
+			
+			//$response = $response->withJson(json_encode($tdb), 201);
 
 		} catch(ModelNotFoundException $e)
 		{
