@@ -21,21 +21,21 @@ Class gestionController extends baseController
     public function getRegister($request, $response) 
 	{
 		if (!isset($_SESSION)) { session_start(); }
-		if (!empty($_SESSION["message"]))
-			return $this->view->render($response, 'register.html.twig', array("message" => $_SESSION["message"]));
+		if (!empty($_SESSION["register_message"]))
+			return $this->view->render($response, 'register.html.twig', array("message" => $_SESSION["register_message"]));
 
 		return $this->view->render($response, 'register.html.twig');
 	}
 
 	public function postRegister($request, $response)
 	{
-		$data = $request->getParams();
 		if (!isset($_SESSION)) { session_start(); }
-
+		$data = $request->getParams();
+		
 		$user = User::where("username", "=", $data["inputUsername"])->first();
 		if (!empty($user)) {
 
-			$_SESSION["message"] = "Username indisponible";
+			$_SESSION["register_message"] = "Username indisponible";
 			return $response->withRedirect($this->router->pathFor('user.Register'));
 
 		}
@@ -50,12 +50,12 @@ Class gestionController extends baseController
         if($user->save())
         {
 
-        	unset($_SESSION["message"]);
+        	unset($_SESSION["register_message"]);
         	return $response->withRedirect($this->router->pathFor('user.Login'));
 
         } else {
 
-        	$_SESSION["message"] = "Erreur lors de votre inscription";
+        	$_SESSION["register_message"] = "Erreur lors de votre inscription";
             return $response->withRedirect($this->router->pathFor('user.Register'));
 
         }
@@ -63,51 +63,104 @@ Class gestionController extends baseController
     }
 
 	//supprimer un ingrédient dans la liste
-	public function suppIngredient($request, $response, $args){
-		try {
+	public function suppIngredient($request, $response, $args)
+	{
+		if (!isset($_SESSION)) { session_start(); }
+		$body = $request->getParsedBody();
 
-			$ingredient = Ingredient::select()->where('id','=',$args['id'])->first();
-			if (!empty($ingredient)) {
-				$ingredient->delete();
-				$response = $response->withJson(array('Succes' => "deleted"), 201);
-			} 
+		$ingredient = Ingredient::select()->where('id', '=', $body["deletedId"])->first();
 
-			$response = $response->withJson(array('Erreur' => "Not found"), 404);
+		if (!empty($ingredient))
+			$ingredient->delete();	
+		else
+			$_SESSION["deleteIngredient_message"] = "Ingredient introuvable";
 
-		} catch(ModelNotFoundException $e){
-
-			$response = $response->withJson(array('Erreur' => "Not found"), 404);
-
-		}
-
-		return $response;
+		return $response->withRedirect($this->router->pathFor('user.loadIngredients'));
 	}
 
 	//ajouter un ingredient
-	public function ajouterIngredient($request, $response, $args)
+	public function addIngredient($request, $response) 
 	{
+		if (!isset($_SESSION)) { session_start(); }
+		if (!empty($_SESSION["addIngredient_message"]))
+			$data["message"] = $_SESSION["addIngredient_message"];
+
+		$categories = Categorie::select()->get();
+		$data["categories"] = $categories;
+
+		return $this->view->render($response, 'addIngredient.html.twig' , $data);
+	}
+
+	public function saveIngredient($request, $response, $args)
+	{
+		if (!isset($_SESSION)) { session_start(); }
+
 		$ingredient = new Ingredient;
 		$body = $request->getParsedBody();
 
-		if(isset($body['cat_id']))
+		if(isset($body['inputCategorie']))
 		{
-			$ingredient->nom = filter_var($body['nom'], FILTER_SANITIZE_STRING);
-			$ingredient->cat_id = filter_var($body['cat_id'], FILTER_SANITIZE_NUMBER_INT);
-			$ingredient->description = filter_var($body['description'], FILTER_SANITIZE_STRING);
-			$ingredient->fournisseur = filter_var($body['fournisseur'], FILTER_SANITIZE_STRING);
-			$ingredient->img = filter_var($body['img'], FILTER_UNSAFE_RAW);
-			$ingredient->save();
+			$ingredient->nom = filter_var($body['inputNom'], FILTER_SANITIZE_STRING);
+			$ingredient->cat_id = filter_var($body['inputCategorie'], FILTER_SANITIZE_NUMBER_INT);
 
-			$newIngredient = array($ingredient, $ingredient->categorie);
-			var_dump($newIngredient);die;
+			if (isset($body["inputDescription"]) && !empty($body["inputDescription"]))
+				$ingredient->description = filter_var($body['inputDescription'], FILTER_SANITIZE_STRING);
 
-			$response = $response->withJson($newIngredient->toJson(), 201);
+			if (isset($body["inputFournisseur"]) && !empty($body["inputFournisseur"]))
+				$ingredient->fournisseur = filter_var($body['inputFournisseur'], FILTER_SANITIZE_STRING);
+
+			/*if (isset($body["inputImage"]) && !empty($body["inputImage"]))
+				$ingredient->img = filter_var($body['inputImage'], FILTER_UNSAFE_RAW);*/
+
+			// Upload image
+			$target_dir = "uploads/";
+			$target_file = $target_dir . basename($_FILES["inputImage"]["name"]);
+			$uploadOk = 1;
+			$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+
+			// Check if image file is a actual image or fake image
+		    $check = getimagesize($_FILES["inputImage"]["tmp_name"]);
+		    if($check !== false) {
+		        $uploadOk = 1;
+		    } else {
+		        $_SESSION["addIngredient_message"] = "File is not an image.";
+		        return $response->withRedirect($this->router->pathFor('user.addIngredient'));
+		    }
+
+			// Check file size
+			if ($_FILES["inputImage"]["size"] > 500000)
+			{
+			    $_SESSION["addIngredient_message"] = "Sorry, your file is too large.";
+		        return $response->withRedirect($this->router->pathFor('user.addIngredient'));
+			}
+
+			// Allow certain file formats
+			if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+			&& $imageFileType != "gif" ) 
+			{
+				$_SESSION["addIngredient_message"] = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+		        return $response->withRedirect($this->router->pathFor('user.addIngredient'));
+			}
+
+			// if everything is ok, try to upload file
+			if (move_uploaded_file($_FILES["inputImage"]["tmp_name"], $target_file))
+				$ingredient->img = filter_var(basename($_FILES["inputImage"]["name"]), FILTER_UNSAFE_RAW);
+		    else
+		    {
+		    	$_SESSION["addIngredient_message"] = "Sorry, there was an error uploading your file.";
+	        	return $response->withRedirect($this->router->pathFor('user.addIngredient'));    
+		    }
+
+			if ($ingredient->save())
+				unset($_SESSION["addIngredient_message"]);
+			else
+				$_SESSION["addIngredient_message"] = "Erreur lors de la creation de la ressource";
+			
+			return $response->withRedirect($this->router->pathFor('user.addIngredient'));
 
 		} else {
-			$response = $response->withJson(array('Erreur' => "erreur lors de la creation de la ressource"), 500);
+			return $response->withJson(array('Erreur' => "erreur lors de la creation de la ressource"), 500);
 		}
-
-		return $response;
 	}
 
 	//modifier une taille de sandwich
@@ -178,6 +231,10 @@ Class gestionController extends baseController
 
 	public function getIngredients($request, $response) 
 	{
+		if (!isset($_SESSION)) { session_start(); }
+		if (!empty($_SESSION["register_message"]))
+			$data["message"] = $_SESSION["deleteIngredient_message"];
+
 		$categories = Categorie::select()->get();
 		$cat_id = (!isset($_GET["categorie"]) ? 1 : $_GET["categorie"]);
 		$ingredients = Ingredient::where("cat_id", "=", $cat_id)->get();
@@ -185,7 +242,8 @@ Class gestionController extends baseController
 		$data["ingredients"] = $ingredients;
 		$data["id"] = array("value" => $cat_id);
 
-		return $this->view->render($response, 'ingredients.html.twig' , $data);
 
+		return $this->view->render($response, 'ingredients.html.twig' , $data);
 	}
+
 }

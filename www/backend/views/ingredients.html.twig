@@ -1,7 +1,7 @@
 {% extends 'layout.html.twig' %}
 
 {% block stylesheets %}
-  
+  <link rel="stylesheet" href="../style/table.css">
 {% endblock %}
 
 {% block title %}Ingredients{% endblock %}
@@ -29,13 +29,18 @@
           <button class="btn btn-lg btn-primary col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-8" type="submit">Charger ingrédients</button>
         </div>
 
+    </form>
+
+    <form action="{{ path_for('user.loadIngredients') }}" method="POST">
+
         <legend>Ingredients :</legend>
-        <table class="table table-hover table-responsive">
+        <table class="table table-striped table-responsive table-bordered">
           <thead>
             <tr>
               <th>Nom</th>
               <th>Déscription</th>
               <th>Fournisseur</th>
+              <th>Image</th>
             </tr>
           </thead>
           <tbody>
@@ -44,13 +49,27 @@
                 <td>{{ ingredient.nom }}</td>
                 <td>{{ ingredient.description }}</td>
                 <td>{{ ingredient.fournisseur }}</td>
-              
-                
-              
+                {% if ingredient.img %}
+                  <td><img src="../uploads/{{ ingredient.img }}" /></td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+                <td>
+                  <input type="hidden" name="_METHOD" value="DELETE"/>
+                  <button class="btn btn-danger btn-block" type="submit" name="deletedId" value="{{ ingredient.id }}">Supprimer</button>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
+
+        {% if message is defined %}
+        <div class="form-group">
+          <div class="alert alert-danger">
+            <strong>{{ message }}</strong>
+          </div>
+        </div>
+        {% endif %}
 
     </form>
 

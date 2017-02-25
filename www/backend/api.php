@@ -89,15 +89,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 
     $app->post('/register', 'gestionContoller:postRegister');
 
-    //supprimer un ingrédient dans la liste
-    $app->delete('/ingredients/{id}', 'gestionContoller:suppIngredient')->setName('suppIngredient');
-
     //ajouter un ingrédient
-    $app->post('/ingredients',
-        function (Request $req, Response $resp, $args) {
-                return (new lbs\api\gestionController($this))->ajouterIngredient($req,$resp,$args);
-        }
-    )->setName('ajoutIngredient');
+    $app->get('/add/ingredients', 'gestionContoller:addIngredient')->setName('user.addIngredient');
+    $app->post('/add/ingredients', 'gestionContoller:saveIngredient');
 
     //modifier une taille de sandwich
     $app->put('/gestion/size/{id}',
@@ -115,5 +109,8 @@ use Illuminate\Database\Capsule\Manager as DB;
 
     // Ingrédients par catégorie
     $app->get('/ingredients', 'gestionContoller:getIngredients')->setName('user.loadIngredients');
+
+    //supprimer un ingrédient dans la liste
+    $app->delete('/ingredients', 'gestionContoller:suppIngredient');
 
     $app->run();

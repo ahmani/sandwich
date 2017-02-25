@@ -1,0 +1,6 @@
+td img {
+  height: 60px;
+  vertical-align: middle;
+  border: 1px outset lightgray;
+  text-align: center;
+}
