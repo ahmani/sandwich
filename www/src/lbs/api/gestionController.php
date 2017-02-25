@@ -13,12 +13,12 @@ use \Slim\Views\Twig as View;
 Class gestionController extends baseController 
 {
 
-	public function test($request, $response) 
+	public function test($request, $response, $args) 
 	{
 		return $this->view->render($response, 'login.html.twig');
 	}
 
-    public function getRegister($request, $response) 
+    public function getRegister($request, $response, $args) 
 	{
 		if (!isset($_SESSION)) { session_start(); }
 		if (!empty($_SESSION["register_message"]))
@@ -27,7 +27,7 @@ Class gestionController extends baseController
 		return $this->view->render($response, 'register.html.twig');
 	}
 
-	public function postRegister($request, $response)
+	public function postRegister($request, $response, $args)
 	{
 		if (!isset($_SESSION)) { session_start(); }
 		$data = $request->getParams();
@@ -79,7 +79,7 @@ Class gestionController extends baseController
 	}
 
 	//ajouter un ingredient
-	public function addIngredient($request, $response) 
+	public function addIngredient($request, $response, $args) 
 	{
 		if (!isset($_SESSION)) { session_start(); }
 		if (!empty($_SESSION["addIngredient_message"]))
@@ -163,38 +163,72 @@ Class gestionController extends baseController
 		}
 	}
 
-	//modifier une taille de sandwich
-	public function modifierTaille($request, $response, $args)
+	public function getIngredients($request, $response, $args) 
 	{
-		try
-		{
-			if (!isset($args["id"]))
-				return $response->withJson(array('Erreur' => "Missing param"), 500);
+		if (!isset($_SESSION)) { session_start(); }
+		if (!empty($_SESSION["register_message"]))
+			$data["message"] = $_SESSION["deleteIngredient_message"];
 
-			$data = $request->getParsedBody();
+		$categories = Categorie::select()->get();
+		$cat_id = (!isset($_GET["categorie"]) ? 1 : $_GET["categorie"]);
+		$ingredients = Ingredient::where("cat_id", "=", $cat_id)->get();
+		$data["categories"] = $categories;
+		$data["ingredients"] = $ingredients;
+		$data["id"] = array("value" => $cat_id);
 
-			$size = Size::select()->where('id','=',$args['id'])->firstOrFail();
 
-			if (!empty($data["nom"]))
-				$size->nom = filter_var($data['nom'], FILTER_SANITIZE_STRING);
-
-			if (!empty($data["description"]))
-				$size->description = filter_var($data['description'], FILTER_SANITIZE_STRING);
-
-			if (!empty($data["prix"]))
-				$size->prix = filter_var($data['prix'], FILTER_SANITIZE_NUMBER_FLOAT);
-
-			$size->save();
-			$response = $response->withJson(json_encode($size), 201);
-
-		} catch(ModelNotFoundException $e)
-		{
-			$response = $response->withJson(array("error" => "Not found"), 404);
-		}
-
-		return $response;
+		return $this->view->render($response, 'ingredients.html.twig' , $data);
 	}
 
+	public function getSizes($request, $response, $args) 
+	{
+		if (!isset($_SESSION)) { session_start(); }
+		if (!empty($_SESSION["register_message"]))
+			$data["message"] = $_SESSION["updateSize_message"];
+
+		$sizes = Size::select()->get();
+		$data["sizes"] = $sizes;
+
+		$size_id = (!isset($_GET["size"]) ? 1 : $_GET["size"]);
+		$data["id"] = array("value" => $size_id);
+
+		$selected_size = Size::where("id", "=", $size_id)->first();
+		$data["selected_size"] = $selected_size;
+
+		return $this->view->render($response, 'sizes.html.twig' , $data);
+	}
+
+	//modifier une taille de sandwich
+	public function updateSize($request, $response, $args)
+	{
+		if (!isset($_SESSION)) { session_start(); }
+		$body = $request->getParams();
+
+		if (!isset($body["updatedId"])) 
+		{
+			$_SESSION["updateSize_message"] = "Taille introuvable";
+			return $this->getSizes($request, $response, $args);
+		}
+
+		$size = Size::select()->where('id', '=', $body["updatedId"])->first();
+
+		if (!empty($body["inputNom"]))
+			$size->nom = filter_var($body['inputNom'], FILTER_SANITIZE_STRING);
+
+		/*if (!empty($body["description"]))
+			$size->description = filter_var($body['description'], FILTER_SANITIZE_STRING);*/
+
+		if (!empty($body["inputPrix"]))
+			$size->prix = filter_var($body['inputPrix'], FILTER_SANITIZE_NUMBER_FLOAT);
+
+		if ($size->save())
+			return $this->getSizes($request, $response, $args);
+		else {
+
+			$_SESSION["updateSize_message"] = "Erreur de modification";
+			return $this->getSizes($request, $response, $args);
+		}
+	}
 
 	//obtenir un TDB
 	public function obtenirTDB($request, $response, $args)
@@ -227,23 +261,6 @@ Class gestionController extends baseController
 		}
 
 		return $response;
-	}
-
-	public function getIngredients($request, $response) 
-	{
-		if (!isset($_SESSION)) { session_start(); }
-		if (!empty($_SESSION["register_message"]))
-			$data["message"] = $_SESSION["deleteIngredient_message"];
-
-		$categories = Categorie::select()->get();
-		$cat_id = (!isset($_GET["categorie"]) ? 1 : $_GET["categorie"]);
-		$ingredients = Ingredient::where("cat_id", "=", $cat_id)->get();
-		$data["categories"] = $categories;
-		$data["ingredients"] = $ingredients;
-		$data["id"] = array("value" => $cat_id);
-
-
-		return $this->view->render($response, 'ingredients.html.twig' , $data);
 	}
 
 }

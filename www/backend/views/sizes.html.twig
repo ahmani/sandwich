@@ -1,0 +1,73 @@
+{% extends 'layout.html.twig' %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block title %}Ingredients{% endblock %}
+
+{% block user_content %}
+
+  <div class="container">
+
+    <form action="{{ path_for('user.loadSizes') }}" method="GET">
+
+        <legend>Tailles :</legend>
+
+        <div class="form-group">
+          <select name="size" class="form-control" id="size">
+            {% for size in sizes %}
+              {% if id.value == size.id %}
+                <option value="{{ size.id }}" selected="selected">{{ size.nom }}</option>
+              {% else %}
+                <option value="{{ size.id }}">{{ size.nom }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-lg btn-primary col-xs-6 col-xs-offset-3 col-sm-3 col-sm-offset-9" type="submit">Charger taille</button>
+        </div>
+
+    </form>
+
+    <form action="{{ path_for('user.loadSizes') }}" method="POST">
+
+        <legend>Taille sélectionnée :</legend>
+
+        <div class="form-group">
+          <label for="inputNom">Nom :</label>
+          <input type="text" id="inputNom" name="inputNom" class="form-control" value="{{ selected_size.nom }}" placeholder="Nom" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="inputNombre">Nombre total d'ingrédients :</label>
+          <input type="text" id="inputNombre" name="inputNombre" class="form-control" value="{{ selected_size.nb_ingredients }}" placeholder="Nombre total d'ingrédients" required>
+        </div>
+
+        <div class="form-group">
+          <label for="inputSpecial">Nombre d'ingrédients spécials :</label>
+          <input type="text" id="inputSpecial" name="inputSpecial" class="form-control" value="{{ selected_size.nb_special }}" placeholder="Nombre d'ingrédients spécials" required>
+        </div>
+
+        <div class="form-group">
+          <label for="inputPrix">Prix :</label>
+          <input type="text" id="inputPrix" name="inputPrix" class="form-control" value="{{ selected_size.prix }}" placeholder="Prix" required>
+        </div>
+
+        <div class="form-group">
+        <input type="hidden" name="_METHOD" value="PUT"/>
+          <button class="btn btn-success btn-lg col-xs-6 col-xs-offset-3 col-sm-3 col-sm-offset-9" type="submit" name="updatedId" value="{{ selected_size.id }}">Modifier</button>
+        </div>
+    </form>
+
+    {% if message is defined %}
+    <div class="form-group">
+      <div class="alert alert-danger">
+        <strong>{{ message }}</strong>
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+{% endblock user_content %}

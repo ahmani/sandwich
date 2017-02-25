@@ -113,4 +113,10 @@ use Illuminate\Database\Capsule\Manager as DB;
     //supprimer un ingrédient dans la liste
     $app->delete('/ingredients', 'gestionContoller:suppIngredient');
 
+    // Charger les tailles disponibles
+    $app->get('/sizes', 'gestionContoller:getSizes')->setName('user.loadSizes');
+
+    //supprimer un ingrédient dans la liste
+    $app->put('/sizes', 'gestionContoller:updateSize');
+
     $app->run();
