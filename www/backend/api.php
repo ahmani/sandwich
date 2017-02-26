@@ -143,30 +143,94 @@ use Illuminate\Database\Capsule\Manager as DB;
 
 
     //modifier une taille de sandwich
+
+    /**
+    * @apiGroup backend
+    * @apiName updateSize
+    * @apiVersion 0.1.0
+    *
+    * @api {post} /gestion/size/id modifier une taille
+    *
+    * @apiDescription modifier une taille
+    */
     $app->put('/gestion/size/{id}', 'gestionController:modifierTaille')->setName('modifTaille');
 
 
     //obtenir un TDB
+
+    /**
+    * @apiGroup backend
+    * @apiName getIngredients
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /add/ingredients Accès au tableau de bord
+    *
+    * @apiDescription Accès au tableau de bord
+    */
     $app->get('/gestion/tdb', 'gestionController:obtenirTDB')->setName('tableauDeBord');
 
 
     // Ingrédients par catégorie
+
+    /**
+    * @apiGroup backend
+    * @apiName getIngredients
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /ingredients Accès au ingredients
+    *
+    * @apiDescription Accès au ingrédients
+    */
     $app->get('/ingredients', 'gestionContoller:getIngredients')->setName('user.loadIngredients');
 
 
     //supprimer un ingrédient dans la liste
+    /**
+    * @apiGroup backend
+    * @apiName deleteIngredients
+    * @apiVersion 0.1.0
+    *
+    * @api {delete} /ingredients Accès au ingredients
+    *
+    * @apiDescription supprime un ingredient
+    */
     $app->delete('/ingredients', 'gestionContoller:suppIngredient');
 
 
     // Charger les tailles disponibles
+    /**
+    * @apiGroup backend
+    * @apiName getSize
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /ingredients Accès a toutes les tailles
+    *
+    * @apiDescription Accès a toutes les tailles
+    */
     $app->get('/sizes', 'gestionContoller:getSizes')->setName('user.loadSizes');
 
-
-    //supprimer un ingrédient dans la liste
+    /**
+    * @apiGroup backend
+    * @apiName updateSize
+    * @apiVersion 0.1.0
+    *
+    * @api {post} /size modifier une taille
+    *
+    * @apiDescription modifier une taille
+    */
     $app->put('/sizes', 'gestionContoller:updateSize');
 
 
     // Tableau de bord
+    /**
+    * @apiGroup backend
+    * @apiName updateSize
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /dashboard retourne la page du tableau de bord
+    *
+    * @apiDescription retourne la page du tableau de bord
+    */
     $app->get('/dashboard', 'gestionContoller:getDashboard')->setName('user.loadDashboard');
 
 
