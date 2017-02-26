@@ -49,6 +49,96 @@ use Illuminate\Database\Capsule\Manager as DB;
         $app = new \Slim\App(new \Slim\Container($c));
         $app->add('addheaders');
 
+        /**
+        * @apiGroup Commandes
+        * @apiName getCommandes
+        * @apiVersion 0.1.0
+        *
+        * @api {get} /commande/id Renvoie la liste complète des commandes , triée par date de livraison et ordre de création
+        * @apiDescription Recuperer la liste complète des commandes , triée par date de livraison et ordre de création
+        *
+        *
+        * @apiSuccessExample {json} exemple de réponse en cas de succès
+        *[
+        *    {
+        *        "Nom du client": "ikram",
+        *        "Email": "ikram.ahmani@gmail.com",
+        *        "Date de création": "2017-02-25 00:00:00",
+        *        "Date de retrait": "2017-02-22 18:25:00",
+        *        "Etat": "progress",
+        *        "Sandwichs": [
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais",
+        *                    "Sauces": "vinaigrette huile d'olive"
+        *                }
+        *            }
+        *        ]
+        *    }
+        *]
+        *
+        */
+
         $app->get('/commandes',
             function (Request $req, Response $resp, $args) {
                 if(empty($req->getQueryParams()))
