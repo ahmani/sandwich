@@ -711,12 +711,58 @@
   },
   {
     "group": "Commandes",
+    "name": "getCommande",
+    "version": "0.1.0",
+    "type": "get",
+    "url": "/commande/id",
+    "title": "renvoie toute les informations sur une commande",
+    "description": "<p>Recuperer toute les informations d'une commande</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "{\n \"id\": \"2\",\n \"token\": \"4nun78lccu1njywv5cb4f56glbovp9rn\",\n \"etat\": \"paid\",\n \"nom_client\": \"ikram\",\n \"email\": \"ikram@gmail.com\",\n \"date\": \"2017-01-31 00:00:00\",\n \"montant\": \"32\",\n \"date_retrait\": \"2017-02-03 00:00:00\",\n \"sandwichs\": [\n   {\n     \"id\": \"22\",\n     \"id_commande\": \"2\",\n     \"id_size\": \"1\",\n     \"id_type\": \"1\"\n   },\n   {\n     \"id\": \"23\",\n     \"id_commande\": \"2\",\n     \"id_size\": \"1\",\n     \"id_type\": \"1\"\n   }\n ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "no",
+            "description": "<p>query results</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "    HTTP/1.1 404 Not Found\n\t\t\"No query results for model [lbs\\common\\model\\Commande.\"",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/api.php",
+    "groupTitle": "Commandes"
+  },
+  {
+    "group": "Commandes",
     "name": "payCommande",
     "version": "0.1.0",
     "type": "put",
     "url": "/commande/id/pay",
     "title": "Envoie les information de paiement",
     "description": "<p>Envoi des informations de paiement Le nom, prenom, numero de carte, cyrptogramme et montant doivent etre envoyés</p>",
+    "examples": [
+      {
+        "title": "Exemple de requête :",
+        "content": "   POST /categories/ HTTP/1.1\n   Host: api.lbs.local\n   Content-Type: application/json;charset=utf8\n\n   {\n      \"nom\"         : \"Dupont\",\n\t\t\t \"prenom\" : \"Jean\",\n\t\t\t \"numCarte\" : 123456,\n\t\t\t \"cryptogramme\" : 123,\n\t\t\t\"montant\" : 32\n   }",
+        "type": "json"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -746,6 +792,57 @@
         {
           "title": "exemple de réponse en cas d'erreur",
           "content": "    HTTP/1.1 400\n{\"Erreur\":\"les montants ne correspondent pas\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "api/api.php",
+    "groupTitle": "Commandes"
+  },
+  {
+    "group": "Commandes",
+    "name": "updateCommande",
+    "version": "0.1.0",
+    "type": "put",
+    "url": "/commande/id",
+    "title": "Modifie la date de livraison d'une commande",
+    "description": "<p>Modifier la date de retrait d'une commande La nouvelle date doit être fournie</p>",
+    "examples": [
+      {
+        "title": "Exemple de requête :",
+        "content": "POST /categories/ HTTP/1.1\nHost: api.lbs.local\nContent-Type: application/json;charset=utf8\n\n{\n   \"date_retrait\"         : 2017-01-03\n}",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "{\"Succes\":\"commande mise à jour\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "no",
+            "description": "<p>query results</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "    HTTP/1.1 404 Not Found\n\t\t\"No query results for model [lbs\\common\\model\\Commande.\"",
+          "type": "json"
+        },
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "    HTTP/1.1 400\n{\"Erreur\":\"une erreur est survenu\"}",
           "type": "json"
         }
       ]
