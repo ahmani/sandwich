@@ -44,23 +44,27 @@ Class PrivateController
 	public function getCommandeDetail($req,$resp,$args)
 	{
 		if($args['id'])
-			{
-				$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-			}
+		{
+			$commande = Commande::where('id', '=', $args['id'])->first();
+		}
 		else
-			{
-				return json_error($rs,500,"Id commande required");
-			}
+		{
+			return json_error($resp, 500, "Id commande required");
+		}
 
-			$tab = GetSandwichsByCommande($commande->id);
-			$commande_details[] = array("Nom du client" => $commande->nom_client,
-						   "Email" => $commande->email,
-						   "Date de création" => $commande->date,
-						   "Date de retrait" => $commande->date_retrait,
-						   "Etat" => $commande->etat,
-						   "Sandwichs" => $tab);
-			$resp = $resp->withJson($commande_details, 200);
-			return $resp;
+		if (empty($commande))
+			return json_error($resp, 404, "Not found");
+
+		$tab = GetSandwichsByCommande($commande->id);
+		$commande_details[] = array("Nom du client" => $commande->nom_client,
+					   "Email" => $commande->email,
+					   "Date de création" => $commande->date,
+					   "Date de retrait" => $commande->date_retrait,
+					   "Etat" => $commande->etat,
+					   "Sandwichs" => $tab);
+		$resp = $resp->withJson($commande_details, 200);
+
+		return $resp;
 	}
 
 	public function getPaginatedCommandes($req, $resp, $args){
@@ -72,8 +76,7 @@ Class PrivateController
 		return $resp;
 	}
 
-
-//changement de l'etat d'une commande
+	//changement de l'etat d'une commande
 	public function changeCommandStatus($req, $resp, $args)
 	{
 		$commande = Commande::select()->where('id', '=', $args['id'])->firstOrFail();
@@ -100,7 +103,7 @@ Class PrivateController
 			    return json_error($resp, 500, "Transition incorrecte");
 			}
 			$commande->save();
-			return json_success($resp,200, 'Etat de la commande mis à jour');
+			return json_success($resp, 200, 'Etat de la commande mis à jour');
 		}
 
 		return json_error($resp, 404, "Not found");

@@ -63,11 +63,139 @@ use Illuminate\Database\Capsule\Manager as DB;
             }
         )->setName('commandes');
 
+
+        /**
+        * @apiGroup Commandes
+        * @apiName getCommandeDetail
+        * @apiVersion 0.1.0
+        *
+        * @api {get} /commande/id renvoie tous les détails d'une commande
+        * @apiDescription Recuperer tous les détails d'une commande
+        *
+        *
+        * @apiSuccessExample {json} exemple de réponse en cas de succès
+        *[
+        *    {
+        *        "Nom du client": "ikram",
+        *        "Email": "ikram.ahmani@gmail.com",
+        *        "Date de création": "2017-02-25 00:00:00",
+        *        "Date de retrait": "2017-02-22 18:25:00",
+        *        "Etat": "progress",
+        *        "Sandwichs": [
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": []
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais"
+        *                }
+        *            },
+        *            {
+        *                "Taille": "petite faim",
+        *                "Type": "blanc",
+        *                "ingredients": {
+        *                    "salades": "laitue",
+        *                    "crudités": "carottes",
+        *                    "viandes": "blanc de poulet",
+        *                    "Fromages": "chèvre frais",
+        *                    "Sauces": "vinaigrette huile d'olive"
+        *                }
+        *            }
+        *        ]
+        *    }
+        *]
+        *
+        * @apiError (Erreur : 404) no query results
+        *
+        * @apiErrorExample {json} exemple de réponse en cas d'erreur
+        *     HTTP/1.1 404 Not found
+        *       "Not found"
+        *
+        * @apiError (Erreur : 500) Missing params
+        *
+        * @apiErrorExample {json} exemple de réponse en cas d'erreur
+        *     HTTP/1.1 500 
+        *       "Id commande required"
+        *
+        */
+
         $app->get('/commande/{id}',
             function (Request $req, Response $resp, $args) {
                     return (new lbs\api\PrivateController($this))->getCommandeDetail($req,$resp,$args);
             }
         )->setName('commande');
+
+        /**
+        * @apiGroup Commandes
+        * @apiName changeCommandStatus
+        * @apiVersion 0.1.0
+        *
+        * @api {get} /commande/id Change l'état d'une commande
+        * @apiDescription Change l'état d'une commande
+        *
+        *
+        *
+        * @apiSuccessExample {json} exemple de réponse en cas de succès
+        * HTTP/1.1 200
+        *       "Etat de la commande mis à jour"
+        *
+        * @apiError (Erreur : 404) no query results
+        *
+        * @apiErrorExample {json} exemple de réponse en cas d'erreur
+        *     HTTP/1.1 404 Not Found
+        *       "No query results for model [lbs\common\model\Commande."
+        *
+        * @apiErrorExample {json} exemple de réponse en cas d'erreur
+        *     HTTP/1.1 500
+        *       "Transition incorrecte"
+        */
 
         //changement de l'etat d'une commande
         $app->put('/commandes/{id}',
@@ -75,12 +203,5 @@ use Illuminate\Database\Capsule\Manager as DB;
                 return (new lbs\api\PrivateController($this))->changeCommandStatus($req,$resp,$args);
         }
         )->setName('changeCommandStatus');
-
-
-    $app->put('/commandes/{id}',
-        function (Request $req, Response $resp, $args) {
-                return (new lbs\api\PrivateController($this))->changeCommandStatus($req,$resp,$args);
-        }
-    )->setName('changeCommandStatus');
 
     $app->run();
