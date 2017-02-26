@@ -119,6 +119,7 @@ Class PublicController
 
 	if(isset($req->getParsedBody()['nom_client']) &&
 		 isset($req->getParsedBody()['email']) &&
+		 isset($req->getParsedBody()['date_retrait']) &&
 		 isset($req->getParsedBody()['date'])){
 			$com->token = $generator->generateString(32, 'abcdefghijklmnopqrstuvwxyz123456789');
 			$com->nom_client = filter_var($req->getParsedBody()['nom_client'], FILTER_SANITIZE_STRING);
@@ -133,7 +134,7 @@ Class PublicController
 			$rs->withHeader('Location', '/commandes//'+$com->id);
 			return $rs;
 	}else{
-		json_error($rs, 500, "fill all the fields");
+		json_error($rs, 400, "fill all the fields");
 		}
 	}
 
@@ -167,7 +168,6 @@ Class PublicController
 			{
 				json_error($rs,500,"Size required");
 			}
-
 		if(!empty($body['ingredient']))
 		{
 			foreach ($body['ingredient'] as $value) {
@@ -261,7 +261,7 @@ Class PublicController
 				//$rs->getBody()->write($etat->toJson());
 				$etatcommande = array();
 				$commandes = array("id"=>$etat->id , "token"=>$etat->token,"etat"=>$etat->etat,
-				"nom_client"=>$etat->nom_client,"email"=>$etat->email,"date"=>$etat->date,"montant"=>$etat->montant);
+				"nom_client"=>$etat->nom_client,"email"=>$etat->email,"date"=>$etat->date, "date_retrait"=>$etat->date_retrait, "montant"=>$etat->montant);
 				array_push($etatcommande, ['commande' => $commandes,
 				'links' => ['self' =>
 				['href' => $this->cont['router']->pathFor('etatCommande',['id' => $etat->id])]]]);
@@ -302,20 +302,20 @@ Class PublicController
 			$facture = array(GetSandwichsByCommande($commande->id), "montant de la commande"=>$montant);
 			$rs->getBody()->write(json_encode($facture));
 		}else{
-				return json_error($rs,404,'la commande n\'est pas encore livree');
+				return json_error($rs,400	 ,'la commande n\'est pas encore livree');
 		}
 	}
 
 	public function payCommande($req, $rs, $args){
 		$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
-
 		if(isset($req->getParsedBody()['nom']) &&
 			isset($req->getParsedBody()['prenom']) &&
 			isset($req->getParsedBody()['numCarte']) &&
+			isset($req->getParsedBody()['montant']) &&
 			isset($req->getParsedBody()['cryptogramme'])) {
 
 				if($req->getParsedBody()['montant'] != $commande->montant){
-		 			return json_error($rs, 500, 'les montants ne correspondent pas');
+		 			return json_error($rs, 400, 'les montants ne correspondent pas');
 		 		}
 
 				$commande->etat = "paid";
@@ -341,13 +341,13 @@ Class PublicController
 		$body = $req->getParsedBody();
 
 		if(empty($body['taille']))
-		{	
+		{
 			json_error($rs, 500, "Size required");
 		}
 
 		if(!empty($body['ingredient']))
 		{
-			foreach ($body['ingredient'] as $value) 
+			foreach ($body['ingredient'] as $value)
 			{
 				$ingredient = Ingredient::where("id", "=", $value)->firstOrFail();
 				$categorie = categorie::where('id', '=', $ingredient->cat_id)->firstOrFail();
@@ -380,10 +380,10 @@ Class PublicController
 			{
 				if($count <= $taille->nb_special)
 				{
-					foreach ($body["ingredient"] as $key => $value) 
-					{	
+					foreach ($body["ingredient"] as $key => $value)
+					{
 						if ($key != $value)
-						{	
+						{
 							$sandwich->ingredients()
 							    	->newPivotStatement()
 							    	->where('id_sandwich', $args["id_sandwich"])
@@ -401,12 +401,12 @@ Class PublicController
 			} else {
 
 			}
-				
+
 		} else if ($commande->etat == "paid") {
-			foreach ($body["ingredient"] as $key => $value) 
-			{	
+			foreach ($body["ingredient"] as $key => $value)
+			{
 				if ($key != $value)
-				{	
+				{
 					$ingredient = ingredient::where("id", "=", $key)->firstOrFail();
 
 					if ($ingredient->cat_id == 5) {
@@ -433,8 +433,8 @@ Class PublicController
 
 			if($commande->etat != "livrée") {
 				$commande->date_retrait = $body["date_retrait"];
-				var_dump($commande);
 				$commande->save();
+				return json_success($rs, 200, "commande mise à jour");
 			}
 
 		}catch(\Exception $e){
@@ -443,19 +443,22 @@ Class PublicController
 	}
 
 	//fonction pour modifier la date de livraison d'une commande
-	public function getCommandeDescritpion($req, $rs,$args)
+	public function getCommandeDescription($req, $rs,$args)
 	{
 		try {
 			$body = $req->getParsedBody();
 			$commande = Commande::where('id', '=', $args['id'])->firstOrFail();
 
 			$sandwichs = $commande->sandwichs;
+			$array = json_encode($commande);
+			$rs = $rs->withStatus(200)
+				->withHeader('Content-Type', 'application/json;charset=utf8');
+				$rs->getBody()->write($commande->toJson());
+			// foreach ($sandwichs as $sandwich) {
+			// 	$array[$sandwich->id] = $sandwich->size->prix;
+			// }
 
-			foreach ($sandwichs as $sandwich) {
-				$array["Sandwich ".$sandwich->id] = "Prix : ".$sandwich->size->prix;
-			}
-
-			return json_success($rs,200, json_encode($array));
+			return $rs;
 
 		}catch(\Exception $e){
 			return json_error($rs, 404, $e->getMessage());

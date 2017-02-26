@@ -19,7 +19,7 @@ Class Commande extends Model{
 
   public function sandwichs()
   {
-    return $this->hasMany('lbs\common\model\sandwich', 'id_commande');
+    return $this->hasMany('lbs\common\model\Sandwich', 'id_commande');
   }
 
   public function getToken(){
