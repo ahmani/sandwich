@@ -46,7 +46,7 @@ use Illuminate\Database\Capsule\Manager as DB;
         };
     };
 
-	
+
     $app = new \Slim\App(new \Slim\Container($c));
     $app->add('addheaders');
 
@@ -79,17 +79,66 @@ use Illuminate\Database\Capsule\Manager as DB;
     // Routes
 
     // Authentification
+    /**
+    * @apiGroup backend
+    * @apiName getLogin
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /login  accès à la page de connexion
+    *
+    * @apiDescription Accès à la page de connexion
+    */
     $app->get('/login', 'gestionContoller:test')->setName('user.Login');
     $app->post('/login', 'gestionContoller:register');
 
 
     // Inscription
+
+    /**
+    * @apiGroup backend
+    * @apiName getRegister
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /register accès à la page d'inscription
+    *
+    * @apiDescription Accès à la page d'inscription
+    */
     $app->get('/register', 'gestionContoller:getRegister')->setName('user.Register');
+
+    /**
+    * @apiGroup backend
+    * @apiName postRegister
+    * @apiVersion 0.1.0
+    *
+    * @api {post} /register soumission d'une inscription
+    *
+    * @apiDescription soumission d'inscription
+    */
     $app->post('/register', 'gestionContoller:postRegister');
 
 
     //ajouter un ingrédient
+
+    /**
+    * @apiGroup backend
+    * @apiName getIngredients
+    * @apiVersion 0.1.0
+    *
+    * @api {get} /add/ingredients accès à la page d'ajout d'ingredient
+    *
+    * @apiDescription Accès à la page d'ajout d'ingredient
+    */
     $app->get('/add/ingredients', 'gestionContoller:addIngredient')->setName('user.addIngredient');
+
+    /**
+    * @apiGroup backend
+    * @apiName postRegister
+    * @apiVersion 0.1.0
+    *
+    * @api {post} /add/ingredients soumission d'un ingredient
+    *
+    * @apiDescription soumission d'un ingredient
+    */
     $app->post('/add/ingredients', 'gestionContoller:saveIngredient');
 
 
