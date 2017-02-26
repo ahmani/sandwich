@@ -8,8 +8,9 @@ use lbs\common\model\Commande;
 use lbs\common\model\size;
 use lbs\common\model\type;
 use lbs\common\model\Sandwich;
+use lbs\common\model\Card;
 use lbs\common\utils\CommonsFunctions;
-use lbs\common\utils\Card;
+
 
 Class PublicController
 {
@@ -471,13 +472,17 @@ Class PublicController
 		if (!isset($args["id"]))
 			return json_error($rs, 500, "Missing Id");
 
-		$body = $request->getParsedBody();
 		$card = Card::where("id_user", "=", $args["id"])->first();
-		
-		if (!empty($card))
-			return json_error($rs, 401, "Vous avez déjà une carte de fidélité");
 
-		
+		if (!empty($card))
+			return json_error($response, 401, "Vous avez deja une carte de fidelite");
+
+		$newCard = new Card();
+		$newCard->id_user = filter_var($args['id'], FILTER_SANITIZE_NUMBER_INT);
+		$newCard->credit = 0;
+		$newCard->save();
+
+		return json_success($response, 201, $newCard->id);
 		
 	}
 }
