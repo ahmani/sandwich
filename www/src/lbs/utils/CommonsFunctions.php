@@ -12,6 +12,8 @@ function GetSandwichsByCommande($id_commande)
 {
 	$response = array();
 	$sandwichs = Sandwich::where("id_commande","=",$id_commande)->get();
+	$array = array();
+
 	foreach ($sandwichs as $key => $value) {
 		foreach ($value->ingredients as $val) {
 			$cat = categorie::where('id', '=', $val->cat_id)->firstOrFail();
