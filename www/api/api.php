@@ -754,4 +754,12 @@ function (Request $req, Response $resp, $args){
 }
 )->setName('getCommandeDescription');
 
+
+// Créer carte de fidélité
+$app->post('/users/{id}/card',
+function (Request $req, Response $resp, $args){
+	return (new lbs\api\PublicController($this))->createFidelityCard($req, $resp, $args);
+}
+)->setName('createFidelityCard');
+
 $app->run();

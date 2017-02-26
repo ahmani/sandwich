@@ -9,6 +9,7 @@ use lbs\common\model\size;
 use lbs\common\model\type;
 use lbs\common\model\Sandwich;
 use lbs\common\utils\CommonsFunctions;
+use lbs\common\utils\Card;
 
 Class PublicController
 {
@@ -463,5 +464,20 @@ Class PublicController
 		}catch(\Exception $e){
 			return json_error($rs, 404, $e->getMessage());
 		}
+	}
+
+	public function createFidelityCard($request, $response, $args)
+	{
+		if (!isset($args["id"]))
+			return json_error($rs, 500, "Missing Id");
+
+		$body = $request->getParsedBody();
+		$card = Card::where("id_user", "=", $args["id"])->first();
+		
+		if (!empty($card))
+			return json_error($rs, 401, "Vous avez déjà une carte de fidélité");
+
+		
+		
 	}
 }
