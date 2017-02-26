@@ -137,4 +137,49 @@ INSERT INTO `type` (`id`, `nom`) VALUES
 (2,	'complet'),
 (3,	'cereales');
 
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `last_name` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Contenu de la table `user`
+--
+
+INSERT INTO `user` (`id`, `last_name`, `first_name`, `username`, `password`) VALUES
+(1, 'admin', 'admin', 'admin', '$2y$10$SsU7iJDcBVD3rqRzBBIXA.OYKSCYXScsxvuBMckBYEMNYHHbTuEMu'),
+(2, 'user', 'user', 'user', '$2y$10$b7fza.U1BnZO9NbjEucrFuXwFrUjHnaRQbDStsXITvVikVpTyFyIm');
+
+CREATE TABLE IF NOT EXISTS `fidelity_card` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `credit` float NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_user` (`id_user`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Contenu de la table `fidelity_card`
+--
+
+INSERT INTO `fidelity_card` (`id`, `id_user`, `credit`) VALUES
+(1, 1, 0);
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `fidelity_card`
+--
+ALTER TABLE `fidelity_card`
+  ADD CONSTRAINT `fidelity_card_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
 -- 2017-02-02 10:20:12
